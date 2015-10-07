@@ -5,6 +5,6 @@ private class Item{
 	String itemName;
 	private Item(double p, int num, String type, String name){itemType = type; price = p; itemNumber = num;itemName = name;}
 	double getPrice(){return price;}
-	int itemNumber(){return itemNumber;}
+	int getItemNumber(){return itemNumber;}
 	String getName(){return itemName;}
 }

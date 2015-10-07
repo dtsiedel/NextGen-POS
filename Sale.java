@@ -8,7 +8,7 @@ protected class Sale extends Register{
 	while (nextItem){
 		currentCart.readIn();
 		if (itemNumber.equals(EndOfCart)){nextItem = false;}
-		else if (itemNumber.equals(RemoveItem)){removeItem(itemNumber);}
+		else if (itemNumber.equals(RemoveItem)){currentCart.removeItem(itemNumber);}
 	}
 	tax = getTax(cart);
 
@@ -20,4 +20,9 @@ protected class Sale extends Register{
 		receipt.print();
 		receipt.store();
 	}
+
+	void cancelSale(){
+		this = null;
+	}
+
 }

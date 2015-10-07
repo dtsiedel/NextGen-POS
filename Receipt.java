@@ -1,9 +1,9 @@
 private class Receipt{
 	Cart cart;
 	double tax;
-	int payMethod;  //0: Cash, 1: Credit Card, 2:Check
+	int paymentMethod;  //0: Cash, 1: Credit Card, 2:Check
 
-	private Receipt(Cart c, double t, int pm){cart=c; tax=t; payMethod=pm;}
+	private Receipt(Cart c, double t, int pm){cart=c; tax=t; paymentMethod=pm;}
 
 	void print(){
 		DecimalFormat df = new DecimalFormat("0.00");
