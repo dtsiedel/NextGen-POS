@@ -1,6 +1,10 @@
 private class Item{
 	double price;
 	int itemNumber;
-
-	private Item(p, num){price = p; itemNumber = num;}
+	String itemType;
+	String itemName;
+	private Item(double p, int num, String type, String name){itemType = type; price = p; itemNumber = num;itemName = name;}
+	double getPrice(){return price;}
+	int itemNumber(){return itemNumber;}
+	String getName(){return itemName;}
 }

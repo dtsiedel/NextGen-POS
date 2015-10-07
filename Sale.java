@@ -7,7 +7,7 @@ protected class Sale extends Register{
 	int RemoveItem = -1;
 	while (nextItem){
 		currentCart.readIn();
-		if (itemNumber.equals(EndOfCart)){break;}
+		if (itemNumber.equals(EndOfCart)){nextItem = false;}
 		else if (itemNumber.equals(RemoveItem)){removeItem(itemNumber);}
 	}
 	tax = getTax(cart);
@@ -16,7 +16,7 @@ protected class Sale extends Register{
 	total = currentCart.getSubtotal() + tax;
 
 	if(registerPay()){
-		Receipt receipt = new Receipt(cart, tax, paymentMethod)
+		Receipt receipt = new Receipt(cart, tax, paymentMethod);
 		receipt.print();
 		receipt.store();
 	}
