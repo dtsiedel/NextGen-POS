@@ -7,4 +7,5 @@ private class Item{
 	double getPrice(){return price;}
 	int getItemNumber(){return itemNumber;}
 	String getName(){return itemName;}
+	String getType(){return itemType;}
 }
