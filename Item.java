@@ -1,3 +1,4 @@
+
 /**
  * Item class, an item with price, itemNumber, itemType, and itemName
  */
@@ -7,38 +8,43 @@ public class Item {
     private int itemNumber;
     private String itemType;
     private String itemName;
-    
+
     /**
      * Item constructor
+     *
      * @param p
      * @param num
      * @param type
-     * @param name 
+     * @param name
      */
     public Item(double p, int num, String type, String name) {
-        itemType = type;
         price = p;
         itemNumber = num;
+        itemType = type;
         itemName = name;
     }
+
     /**
      * @return price
      */
     double getPrice() {
         return price;
     }
+
     /**
      * @return itemNumber
      */
     int getItemNumber() {
         return itemNumber;
     }
+
     /**
      * @return itemName
      */
     String getName() {
         return itemName;
     }
+
     /**
      * @return itemType
      */
