@@ -6,14 +6,19 @@ import java.util.Scanner;
  * Cart class extends Register holds ArrayList of items
  */
 public class Cart extends Register {
-
+    
+    private ArrayList<Item> inventory;  //temp
+    protected ArrayList<Item> items;
     /**
      * Cart default constructor
      */
     public Cart() {
+        inventory = new ArrayList<>();
+        items = new ArrayList<>();
+        inventory.add(new Item(2.00, 111, "cat", "Pet"));
+        inventory.add(new Item(2.00, 222, "dog", "Pet"));
+        inventory.add(new Item(2.00, 333, "bin", "Stuff"));
     }
-
-    ArrayList<Item> items = new ArrayList<Item>();
     double subTotal = 0.0;
     Scanner getItemNum = new Scanner(System.in);
 
@@ -23,7 +28,8 @@ public class Cart extends Register {
      */
     void readIn() {
         if (getItemNum.hasNextInt()) {
-            Item i = Inventory.findItem(getItemNum.nextInt());
+            //Item i = Inventory.findItem(getItemNum.nextInt());
+            Item i = inventory.get(getItemNum.nextInt());
             items.add(i);
             subTotal += i.getPrice();
         } else {
@@ -38,7 +44,9 @@ public class Cart extends Register {
      * @param itemNumber
      */
     void removeItem(int itemNumber) {
-        int index = items.lastIndexOf(Inventory.findItem(itemNumber));
+        itemNumber = getItemNum.nextInt();
+        //int index - items.lastIndexOf(Inventory.findItem(itemNumber));
+        int index = items.lastIndexOf(inventory.get(itemNumber));
         if (index != -1) {
             items.remove(index);
             subTotal -= items.get(index).getPrice();
