@@ -17,22 +17,22 @@ public class Cart extends Register {
         this.subTotal = 0.0;
         inventory = new ArrayList<>(); //temp
         items = new ArrayList<>();
-        inventory.add(new Item(2.00, 0, "Pet", "cat")); //temp
-        inventory.add(new Item(4.00, 1, "Pet", "dog")); //temp
-        inventory.add(new Item(6.00, 2, "Stuff", "Bin")); //temp
+        inventory.add(new Item(1.00, 0, "Pet", "Cat")); //temp
+        inventory.add(new Item(1.00, 1, "Pet", "Dog")); //temp
+        inventory.add(new Item(1.00, 2, "Stuff", "Bin")); //temp
     }
 
-    //Scanner getItemNum = new Scanner(System.in);
     /**
      * add(int itemNumber) adds an item to the cart from the inventory
      *
      * @param itemNumber
      */
     public void add(int itemNumber) {
-        if (itemNumber > (inventory.size() - 1) || itemNumber < 0) { //check itemNumber is a valid index in temp inv ArrayLis
+        if (itemNumber > (inventory.size() - 1) || itemNumber < 0) { //check itemNumber is a valid index in temp inv ArrayList
             System.out.println("INVALID INDEX...Try Again");
         } else {
             items.add(inventory.get(itemNumber)); //add the valid item to cart ArrayList
+            //items.get(itemNumber).setQuantity(); //keep track of quantity, do later
             System.out.println(items.get(itemNumber).getName() + " was added to cart!");
             subTotal += items.get(items.size() - 1).getPrice(); //calculate running subTotal of cart per item
         }
@@ -61,10 +61,17 @@ public class Cart extends Register {
     }
 
     /**
+     * clears running subtotal for when cancelSale() is called
+     */
+    public void clearSubTotal() {
+        subTotal = 0;
+    }
+
+    /**
      * @return subTotal
      */
     public double getSubtotal() {
-        return subTotal;
+        return this.subTotal;
     }
 
 }

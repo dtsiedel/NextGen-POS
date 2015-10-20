@@ -18,9 +18,9 @@ public class Receipt {
      * @param pm
      */
     public Receipt(Cart c, double t, int pm) {
-        cart = c;
-        tax = t;
-        paymentMethod = pm;
+        this.cart = c;
+        this.tax = t;
+        this.paymentMethod = pm;
     }
 
     /**
@@ -28,10 +28,12 @@ public class Receipt {
      */
     public void print() {
         DecimalFormat df = new DecimalFormat("0.00");
-        for (Item item : cart.items) {
+        //System.out.println("Item (Quantity)" + "\t\t" + "Price\n"); //fix later
+        for (Item item : cart.items) { //for each item in cart
+            //System.out.println(item.getName() + "\t(" + item.getQuantity() + ")" + "\t\t$" + df.format(item.getPrice())); //fix later
             System.out.println(item.getName() + "\t\t$" + df.format(item.getPrice()));
         }
-        System.out.println("\tOrder Subtotal:\t$" + df.format(cart.getSubtotal()));
+        System.out.println("\n\tOrder Subtotal:\t$" + df.format(cart.getSubtotal()));
         System.out.println("\tTotal Tax:\t$" + df.format(tax));
         System.out.println("\nOrder Total:\t$" + df.format(cart.getSubtotal() + tax));
     }

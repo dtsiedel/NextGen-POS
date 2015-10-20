@@ -8,6 +8,7 @@ public class Item {
     private int itemNumber;
     private String itemType;
     private String itemName;
+    private int quantity;
 
     /**
      * Item constructor
@@ -22,6 +23,7 @@ public class Item {
         this.itemNumber = num;
         this.itemType = type;
         this.itemName = name;
+        this.quantity = 0;
     }
 
     /**
@@ -50,5 +52,21 @@ public class Item {
      */
     public String getType() {
         return itemType;
+    }
+
+    /**
+     * setQuantity assigns number of items
+     *
+     */
+    public void setQuantity() {
+        this.quantity += 1;
+    }
+
+    /**
+     *
+     * @return quantity
+     */
+    public int getQuantity() {
+        return this.quantity;
     }
 }

@@ -78,6 +78,7 @@ public class Sale extends Register {
         /*this should set all elements of ArrayList items to null and set size to 0*/
         System.out.println("Sale was cancelled...CART IS NOW EMPTY!");
         currentCart.items.clear();
+        currentCart.clearSubTotal();
         //System.exit(0);
     }
 
