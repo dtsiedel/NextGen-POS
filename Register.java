@@ -16,7 +16,7 @@ public class Register {
      * @param cart
      * @return
      */
-    double getTax(Cart cart) {
+    public double getTax(Cart cart) {
         double totalTax = 0.0;
         for (Item item : cart.items) {
             //totalTax += item.getPrice()*stateTax(currentState, item.getType());
@@ -27,8 +27,12 @@ public class Register {
 
     /**
      * getPaymentType reads in user input to select payment type
+     *
+     * @return paymentType
      */
-    int getPaymentType() {
+    public int getPaymentType() {
+        System.out.print("Enter payment method-");
+        System.out.print("[OPTIONS: 0 for Cash, 1 for Credit \n-->"); //credit  not implemented yet
         paymentType = readPaymentType.nextInt();
         return paymentType;
     }
@@ -39,7 +43,7 @@ public class Register {
      * @param paymentType
      * @return boolean
      */
-    boolean registerPay(int paymentType) {
+    public boolean registerPay(int paymentType) {
         return paymentType != -1;
     }
 
@@ -48,7 +52,7 @@ public class Register {
      *
      * @param itemNumber
      */
-    void removeFromInventory(int itemNumber) {
+    public void removeFromInventory(int itemNumber) {
         //Call the Inventory and decrement the stock counter by 1
     }
 
@@ -58,7 +62,19 @@ public class Register {
      * @param itemNumber
      * @param quantity
      */
-    void removeFromInventory(int itemNumber, int quantity) {
+    public void removeFromInventory(int itemNumber, int quantity) {
         //Call the Inventory and remove the denoted quantity from the stock counter
+    }
+
+    /**
+     * main for Demo purposes only
+     *
+     * @param args
+     */
+    public static void main(String args[]) {
+        System.out.println("Welcome to The Pandas' POS Demo");
+        Register reg = new Register();
+        Sale sale = new Sale();
+        sale.makeSale();
     }
 }

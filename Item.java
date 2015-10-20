@@ -8,6 +8,7 @@ public class Item {
     private int itemNumber;
     private String itemType;
     private String itemName;
+    private int quantity;
 
     /**
      * Item constructor
@@ -18,37 +19,54 @@ public class Item {
      * @param name
      */
     public Item(double p, int num, String type, String name) {
-        price = p;
-        itemNumber = num;
-        itemType = type;
-        itemName = name;
+        this.price = p;
+        this.itemNumber = num;
+        this.itemType = type;
+        this.itemName = name;
+        this.quantity = 0;
     }
 
     /**
      * @return price
      */
-    double getPrice() {
+    public double getPrice() {
         return price;
     }
 
     /**
      * @return itemNumber
      */
-    int getItemNumber() {
+    public int getItemNumber() {
         return itemNumber;
     }
 
     /**
      * @return itemName
      */
-    String getName() {
+    public String getName() {
         return itemName;
     }
 
     /**
      * @return itemType
      */
-    String getType() {
+    public String getType() {
         return itemType;
+    }
+
+    /**
+     * setQuantity assigns number of items
+     *
+     */
+    public void setQuantity() {
+        this.quantity += 1;
+    }
+
+    /**
+     *
+     * @return quantity
+     */
+    public int getQuantity() {
+        return this.quantity;
     }
 }
