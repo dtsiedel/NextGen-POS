@@ -26,7 +26,7 @@ public class Receipt {
     /**
      * print(), prints subtotal, tax and total
      */
-    void print() {
+    public void print() {
         DecimalFormat df = new DecimalFormat("0.00");
         for (Item item : cart.items) {
             System.out.println(item.getName() + "\t\t$" + df.format(item.getPrice()));
@@ -39,7 +39,7 @@ public class Receipt {
     /**
      * store(), stores receipt in database implemented later
      */
-    void store() {
+    public void store() {
         //Code To Store Receipt in receipt object database
     }
 }

@@ -1,39 +1,40 @@
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Cart class extends Register holds ArrayList of items
  */
 public class Cart extends Register {
-    
+
     private ArrayList<Item> inventory;  //temp
     protected ArrayList<Item> items;
+    private double subTotal;
+
     /**
      * Cart default constructor
      */
     public Cart() {
-        inventory = new ArrayList<>();
+        this.subTotal = 0.0;
+        inventory = new ArrayList<>(); //temp
         items = new ArrayList<>();
-        inventory.add(new Item(2.00, 111, "cat", "Pet"));
-        inventory.add(new Item(2.00, 222, "dog", "Pet"));
-        inventory.add(new Item(2.00, 333, "bin", "Stuff"));
+        inventory.add(new Item(2.00, 0, "Pet", "cat")); //temp
+        inventory.add(new Item(4.00, 1, "Pet", "dog")); //temp
+        inventory.add(new Item(6.00, 2, "Stuff", "Bin")); //temp
     }
-    double subTotal = 0.0;
-    Scanner getItemNum = new Scanner(System.in);
 
+    //Scanner getItemNum = new Scanner(System.in);
     /**
-     * readIn() takes integer input from user to read in single item code adds
-     * item to ArrayList items, calculates running subTotal
+     * add(int itemNumber) adds an item to the cart from the inventory
+     *
+     * @param itemNumber
      */
-    void readIn() {
-        if (getItemNum.hasNextInt()) {
-            //Item i = Inventory.findItem(getItemNum.nextInt());
-            Item i = inventory.get(getItemNum.nextInt());
-            items.add(i);
-            subTotal += i.getPrice();
+    public void add(int itemNumber) {
+        if (itemNumber > (inventory.size() - 1) || itemNumber < 0) { //check itemNumber is a valid index in temp inv ArrayLis
+            System.out.println("INVALID INDEX...Try Again");
         } else {
-            System.out.println("Invalid Item Number and/or Item Number Not Recognized");
+            items.add(inventory.get(itemNumber)); //add the valid item to cart ArrayList
+            System.out.println(items.get(itemNumber).getName() + " was added to cart!");
+            subTotal += items.get(items.size() - 1).getPrice(); //calculate running subTotal of cart per item
         }
     }
 
@@ -43,22 +44,26 @@ public class Cart extends Register {
      *
      * @param itemNumber
      */
-    void removeItem(int itemNumber) {
-        itemNumber = getItemNum.nextInt();
+    public void removeItem(int itemNumber) {
+        //itemNumber = getItemNum.nextInt();
         //int index - items.lastIndexOf(Inventory.findItem(itemNumber));
-        int index = items.lastIndexOf(inventory.get(itemNumber));
-        if (index != -1) {
-            items.remove(index);
-            subTotal -= items.get(index).getPrice();
+        int index = -1;
+        if (itemNumber <= (items.size() - 1)) {
+            index = items.lastIndexOf(items.get(itemNumber));
+            if (index != -1) {
+                System.out.println(items.get(index).getName() + " was removed from cart!");
+                subTotal -= items.get(index).getPrice();
+                items.remove(index);
+            }
         } else {
-            System.out.println("No Such Item Exists in this Cart.");
+            System.out.println("No such item exists in this Cart.");
         }
     }
 
     /**
      * @return subTotal
      */
-    double getSubtotal() {
+    public double getSubtotal() {
         return subTotal;
     }
 

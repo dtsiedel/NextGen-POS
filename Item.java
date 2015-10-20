@@ -18,37 +18,37 @@ public class Item {
      * @param name
      */
     public Item(double p, int num, String type, String name) {
-        price = p;
-        itemNumber = num;
-        itemType = type;
-        itemName = name;
+        this.price = p;
+        this.itemNumber = num;
+        this.itemType = type;
+        this.itemName = name;
     }
 
     /**
      * @return price
      */
-    double getPrice() {
+    public double getPrice() {
         return price;
     }
 
     /**
      * @return itemNumber
      */
-    int getItemNumber() {
+    public int getItemNumber() {
         return itemNumber;
     }
 
     /**
      * @return itemName
      */
-    String getName() {
+    public String getName() {
         return itemName;
     }
 
     /**
      * @return itemType
      */
-    String getType() {
+    public String getType() {
         return itemType;
     }
 }
