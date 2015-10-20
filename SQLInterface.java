@@ -1,6 +1,9 @@
 import java.io.*;
 import java.util.*;
 
+//TODO: improve encapsulation by adding "getAdjustedString() method"
+//TODO: add methods to change price and quantity
+
 public class SQLInterface
 {
 	//given an id number, prints to stdout relevant information
@@ -38,7 +41,8 @@ public class SQLInterface
 
 		String result = sc.nextLine();
 
-		deleter.start(); ///delete output.txt
+		p = deleter.start(); ///delete output.txt
+		p.waitFor(); //wait for delete process to finish before proceeding
 
 		return result;
 
@@ -70,15 +74,28 @@ public class SQLInterface
 		return vals[1];
 	}
 
+	//returns the current quantity of the item in stock
+	public static int getQuantity(int id) throws InterruptedException, IOException
+	{
+		String detailString = getInfo(id);
+		
+		String adjustedString = detailString.replace("|", "~");
+
+		String[] vals = adjustedString.split("~");
+
+		return Integer.parseInt(vals[3]);
+
+	}
+
 
 	//allows for the insertion of a new item into the database
 	//primarily used as a utility function by the database initialization function
 	//it is (currently) the responsibility of the client function to ensure that an id is not occupied before executing this command
-	public static void addProduct(int id, String name, Double price) throws InterruptedException, IOException
+	public static void addProduct(int id, String name, Double price, int quantity) throws InterruptedException, IOException
 	{
 		String base = "INSERT INTO products VALUES("; //base command to insert
 		//then add appropriate parameters
-		String insertCommand = base + Integer.toString(id) + ",\"" + name + "\"," + Double.toString(price) + ");";
+		String insertCommand = base + Integer.toString(id) + ",\"" + name + "\"," + Double.toString(price) + "," + quantity + ");";
 		
 		String[] commands = {"sqlite3", "products", insertCommand};
 
@@ -100,11 +117,15 @@ public class SQLInterface
 		System.out.print("Enter the ID of the product you wish to learn about: ");
 		int id = sc.nextInt();
 
+
 		Double price = getPrice(id);
 		System.out.println("Price: " + price);
 
 		String name = getProductName(id);
 		System.out.println("Name: " + name);
+
+		int quantity = getQuantity(id);
+		System.out.println("Quantity: " + quantity);
 
 
 		//test adding an item
@@ -122,7 +143,10 @@ public class SQLInterface
 			System.out.print("Price: ");
 			price = Double.parseDouble(sc.next());
 
-			addProduct(id, name, price);
+			System.out.print("Quantity: ");
+			quantity = sc.nextInt();
+
+			addProduct(id, name, price, quantity);
 
 			System.out.println("Price of " + name + ": " + getPrice(id));
 
