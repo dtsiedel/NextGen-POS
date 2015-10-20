@@ -50,7 +50,6 @@ public class Sale extends Register {
                     System.out.print("Enter an item to remove\n-->");
                     currentCart.removeItem(sale.nextInt()); //read in another value to remove that item
                 } else if (input == cancelSale) { //input is -190
-                    nextItem = false;
                     cancelSale();
                 } else { //input is none of the options, thus possibly a valid itemNumber to add an item to cart
                     currentCart.add(input);
@@ -77,9 +76,9 @@ public class Sale extends Register {
      */
     public void cancelSale() {
         /*this should set all elements of ArrayList items to null and set size to 0*/
-        System.out.println("Sale was cancelled...EXITING");
+        System.out.println("Sale was cancelled...CART IS NOW EMPTY!");
         currentCart.items.clear();
-        System.exit(0);
+        //System.exit(0);
     }
 
 }

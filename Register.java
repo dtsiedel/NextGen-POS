@@ -27,8 +27,12 @@ public class Register {
 
     /**
      * getPaymentType reads in user input to select payment type
+     *
+     * @return paymentType
      */
     public int getPaymentType() {
+        System.out.print("Enter payment method-");
+        System.out.print("[OPTIONS: 0 for Cash, 1 for Credit \n-->"); //credit  not implemented yet
         paymentType = readPaymentType.nextInt();
         return paymentType;
     }
@@ -63,13 +67,14 @@ public class Register {
     }
 
     /**
-     * main method for Demo purpose only results may differ in final iteration
+     * main for Demo purposes only
+     *
+     * @param args
      */
     public static void main(String args[]) {
         System.out.println("Welcome to The Pandas' POS Demo");
         Register reg = new Register();
         Sale sale = new Sale();
         sale.makeSale();
-
     }
 }
