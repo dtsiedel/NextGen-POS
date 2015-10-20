@@ -33,7 +33,7 @@ public class Cart extends Register {
         } else {
             items.add(inventory.get(itemNumber)); //add the valid item to cart ArrayList
             //items.get(itemNumber).setQuantity(); //keep track of quantity, do later
-            System.out.println(items.get(itemNumber).getName() + " was added to cart!");
+            System.out.println(inventory.get(itemNumber).getName() + " was added to cart!");
             subTotal += items.get(items.size() - 1).getPrice(); //calculate running subTotal of cart per item
         }
     }
