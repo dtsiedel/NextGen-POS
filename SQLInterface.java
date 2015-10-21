@@ -10,7 +10,6 @@ public class SQLInterface
 	public static String getInfo(int id) throws InterruptedException, IOException
 	{
 
-
 		//call sqlite command to access database
 		String[] command = {"sqlite3", "products", "SELECT * FROM products WHERE id = "};
 		command[2] = command[2] + Integer.toString(id) + ";";
@@ -20,8 +19,8 @@ public class SQLInterface
 		File outfile = new File("output.txt"); //write output to a file
 		pb.redirectOutput(outfile);
 		pb.redirectError(outfile);
-		Process p = pb.start(); //execute the command loaded prior
-		p.waitFor(); //not entirely sure how this works but is apparently necessary
+		Process select = pb.start(); //execute the command loaded prior
+		select.waitFor(); //not entirely sure how this works but is apparently necessary
 
 
 		//prepare to remove the text file you created
@@ -41,8 +40,8 @@ public class SQLInterface
 
 		String result = sc.nextLine();
 
-		p = deleter.start(); ///delete output.txt
-		p.waitFor(); //wait for delete process to finish before proceeding
+		Process delete = deleter.start(); ///delete output.txt
+		delete.waitFor(); //wait for delete process to finish before proceeding
 
 		return result;
 
@@ -88,6 +87,28 @@ public class SQLInterface
 	}
 
 
+	//updates the quantity of an item. First int is the id, the second is the 
+	//amount to increment. to decrement, provide a negative number (most common use)
+	//returns the updated value
+	public static int updateQuantity(int id, int quantityChange) throws InterruptedException, IOException
+	{
+		int currentQuant = getQuantity(id);
+		int newQuant = currentQuant+quantityChange;
+
+		String base = "UPDATE products SET quantity=";
+		String command = base + Integer.toString(newQuant) + " WHERE id=" + Integer.toString(id);
+		String[] update = {"sqlite3", "products", command};
+
+		//System.out.println(command);
+		ProcessBuilder pb = new ProcessBuilder(update);
+
+		Process updater = pb.start();
+		updater.waitFor();
+
+		return newQuant; 
+	}
+
+
 	//allows for the insertion of a new item into the database
 	//primarily used as a utility function by the database initialization function
 	//it is (currently) the responsibility of the client function to ensure that an id is not occupied before executing this command
@@ -103,7 +124,6 @@ public class SQLInterface
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		Process p = pb.start();
 		p.waitFor();
-
 
 	}
 
@@ -152,7 +172,40 @@ public class SQLInterface
 
 		}
 
+		System.out.print("Change the quantity of a product?");
+		cont = sc.next().charAt(0);
+
+		if((cont == 'y') || (cont == 'Y'))
+		{
+			System.out.print("ID: ");
+			id = sc.nextInt();
+
+			System.out.print("Quantity change: ");
+			int q = sc.nextInt();
+
+			System.out.println("Quantity before " + Integer.toString(getQuantity(id)));
+			updateQuantity(id, q);
+			System.out.println("Quantity after " + Integer.toString(getQuantity(id)));
+		}
+
 
 	}
+
+
+	// public static void main(String[] args) throws InterruptedException, IOException
+	// {
+	// 	Scanner sc = new Scanner(System.in);
+
+	// 	System.out.print("Id: ");
+	// 	int id = sc.nextInt();
+
+	// 	System.out.print("Quantity change: ");
+	// 	int q = sc.nextInt();
+
+	// 	System.out.println("Quantity before " + Integer.toString(getQuantity(id)));
+	// 	updateQuantity(id, q);
+	// 	System.out.println("Quantity after " + Integer.toString(getQuantity(id)));
+
+	// }
 
 }
