@@ -6,8 +6,28 @@ import java.util.*;
 
 public class SQLInterface
 {
+	private static SQLInterface instance; //for implementation of singleton
+
+	//private constructor prevents outside clases from accessing
+	private SQLInterface()  
+	{
+		//intentionally blank
+	}
+
+	//returns the instance if it exists, or makes exactly one if 
+	//one does not yet exist
+	public synchronized static SQLInterface getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new SQLInterface();
+		}
+
+		return instance;
+	}
+
 	//given an id number, prints to stdout relevant information
-	public static String getInfo(int id) throws InterruptedException, IOException
+	public String getInfo(int id) throws InterruptedException, IOException
 	{
 
 		//call sqlite command to access database
@@ -48,9 +68,9 @@ public class SQLInterface
 	}
 
 	//returns just the price based on id
-	public static Double getPrice(int id) throws InterruptedException, IOException
+	public Double getPrice(int id) throws InterruptedException, IOException
 	{
-		String detailString = getInfo(id);
+		String detailString = this.getInfo(id);
 
 		//weird workaround because Java's split method doesn't work on "|" character
 		String adjustedString = detailString.replace("|", "~");
@@ -62,9 +82,9 @@ public class SQLInterface
 	}
 
 	//returns the name of the product based on id
-	public static String getProductName(int id) throws InterruptedException, IOException
+	public String getProductName(int id) throws InterruptedException, IOException
 	{
-		String detailString = getInfo(id);
+		String detailString = this.getInfo(id);
 
 		String adjustedString = detailString.replace("|", "~");
 
@@ -74,9 +94,9 @@ public class SQLInterface
 	}
 
 	//returns the current quantity of the item in stock
-	public static int getQuantity(int id) throws InterruptedException, IOException
+	public int getQuantity(int id) throws InterruptedException, IOException
 	{
-		String detailString = getInfo(id);
+		String detailString = this.getInfo(id);
 		
 		String adjustedString = detailString.replace("|", "~");
 
@@ -90,9 +110,9 @@ public class SQLInterface
 	//updates the quantity of an item. First int is the id, the second is the 
 	//amount to increment. to decrement, provide a negative number (most common use)
 	//returns the updated value
-	public static int updateQuantity(int id, int quantityChange) throws InterruptedException, IOException
+	public int updateQuantity(int id, int quantityChange) throws InterruptedException, IOException
 	{
-		int currentQuant = getQuantity(id);
+		int currentQuant = this.getQuantity(id);
 		int newQuant = currentQuant+quantityChange;
 
 		String base = "UPDATE products SET quantity=";
@@ -112,7 +132,7 @@ public class SQLInterface
 	//allows for the insertion of a new item into the database
 	//primarily used as a utility function by the database initialization function
 	//it is (currently) the responsibility of the client function to ensure that an id is not occupied before executing this command
-	public static void addProduct(int id, String name, Double price, int quantity) throws InterruptedException, IOException
+	public void addProduct(int id, String name, Double price, int quantity) throws InterruptedException, IOException
 	{
 		String base = "INSERT INTO products VALUES("; //base command to insert
 		//then add appropriate parameters
@@ -131,6 +151,9 @@ public class SQLInterface
 	//test stub, just runs through the functions
 	public static void main(String[] args) throws InterruptedException, IOException
 	{
+
+		SQLInterface inter = SQLInterface.getInstance();
+
 		//test basic accessing of fields
 		Scanner sc = new Scanner(System.in);
 
@@ -138,13 +161,13 @@ public class SQLInterface
 		int id = sc.nextInt();
 
 
-		Double price = getPrice(id);
+		Double price = inter.getPrice(id);
 		System.out.println("Price: " + price);
 
-		String name = getProductName(id);
+		String name = inter.getProductName(id);
 		System.out.println("Name: " + name);
 
-		int quantity = getQuantity(id);
+		int quantity = inter.getQuantity(id);
 		System.out.println("Quantity: " + quantity);
 
 
@@ -166,9 +189,9 @@ public class SQLInterface
 			System.out.print("Quantity: ");
 			quantity = sc.nextInt();
 
-			addProduct(id, name, price, quantity);
+			inter.addProduct(id, name, price, quantity);
 
-			System.out.println("Price of " + name + ": " + getPrice(id));
+			System.out.println("Price of " + name + ": " + inter.getPrice(id));
 
 		}
 
@@ -183,29 +206,13 @@ public class SQLInterface
 			System.out.print("Quantity change: ");
 			int q = sc.nextInt();
 
-			System.out.println("Quantity before " + Integer.toString(getQuantity(id)));
-			updateQuantity(id, q);
-			System.out.println("Quantity after " + Integer.toString(getQuantity(id)));
+			System.out.println("Quantity before " + Integer.toString(inter.getQuantity(id)));
+			inter.updateQuantity(id, q);
+			System.out.println("Quantity after " + Integer.toString(inter.getQuantity(id)));
 		}
 
 
 	}
 
-
-	// public static void main(String[] args) throws InterruptedException, IOException
-	// {
-	// 	Scanner sc = new Scanner(System.in);
-
-	// 	System.out.print("Id: ");
-	// 	int id = sc.nextInt();
-
-	// 	System.out.print("Quantity change: ");
-	// 	int q = sc.nextInt();
-
-	// 	System.out.println("Quantity before " + Integer.toString(getQuantity(id)));
-	// 	updateQuantity(id, q);
-	// 	System.out.println("Quantity after " + Integer.toString(getQuantity(id)));
-
-	// }
 
 }
