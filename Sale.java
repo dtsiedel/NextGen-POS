@@ -1,4 +1,5 @@
 
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -54,6 +55,9 @@ public class Sale extends Register {
                 } else { //input is none of the options, thus possibly a valid itemNumber to add an item to cart
                     currentCart.add(input);
                 }
+            } else if (!sale.hasNextInt()) { //if the user enters letters the program exits, fix to be nicer
+                System.out.println("Error...Expecting integer input"); //make inital scanner a String s, use int input = Integer.parseInt(s)
+                System.exit(1);                                         //try catch on NumberFormatException?
             } else {
                 System.out.println("INVALID INPUT...Try Again");
             }
@@ -64,7 +68,8 @@ public class Sale extends Register {
         total = currentCart.getSubtotal() + tax;
 
         if (registerPay(pt)) {
-            Receipt receipt = new Receipt(currentCart, tax, pt);
+            Date d = new Date(); //create a date object to assign to the receipt
+            Receipt receipt = new Receipt(currentCart, tax, pt, d);
             receipt.print();
             receipt.store();
         }

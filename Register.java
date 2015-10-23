@@ -1,5 +1,6 @@
 
 import java.util.Scanner;
+import java.util.Date;
 
 /**
  * Register class, calculates totalTax, and getPaymentType
@@ -7,8 +8,6 @@ import java.util.Scanner;
 public class Register {
 
     int paymentType;
-    //State currentState;
-    Scanner readPaymentType = new Scanner(System.in);
 
     /**
      * getTax() calculates totalTax of items in cart
@@ -31,9 +30,10 @@ public class Register {
      * @return paymentType
      */
     public int getPaymentType() {
+        Scanner readPaymentMethod = new Scanner(System.in);
         System.out.print("Enter payment method-");
         System.out.print("[OPTIONS: 0 for Cash, 1 for Credit \n-->"); //credit  not implemented yet
-        paymentType = readPaymentType.nextInt();
+        paymentType = readPaymentMethod.nextInt();
         return paymentType;
     }
 
@@ -72,9 +72,32 @@ public class Register {
      * @param args
      */
     public static void main(String args[]) {
-        System.out.println("Welcome to The Pandas' POS Demo");
+        //log in here
+        Login l = Login.getInstance();
+        l.startLogin(); //Success?
         Register reg = new Register();
-        Sale sale = new Sale();
-        sale.makeSale();
+        System.out.print("Please select an option\n-->");
+        System.out.print("[OPTIONS- 0:Process Sale, 1:Process Rental, 2: Process Return, -1:Exit]");
+        Scanner opt = new Scanner(System.in);
+        switch (opt.nextInt()) {
+            case 0:
+                Sale sale = new Sale();
+                sale.makeSale();
+                break;
+            case 1:
+                //Rental rent = new Rental();
+                //rental.makeRental();
+                break;
+            case 2:
+                //Return return = new Return();
+                //return.makeReturn();
+                break;
+            case -1:
+                //CALL run() from java.Runtime.shutdownhook()...make method above
+                break;
+            default:
+                //PUT STUFF HERE!!!
+                break;
+        }
     }
 }
