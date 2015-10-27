@@ -19,13 +19,13 @@ public class Item {
      * @param type
      * @param name
      */
-    public Item(boolean r, double p, int num, String type, String name) {
+    public Item(boolean r, double p, int num, String type, String name, Double q) {
         this.isRental = r;
         this.price = p;
         this.itemNumber = num;
         this.itemType = type;
         this.itemName = name;
-        this.quantity = 0;
+        this.quantity = q;
     }
 
     /**
