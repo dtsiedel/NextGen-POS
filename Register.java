@@ -5,9 +5,17 @@ import java.util.Scanner;
  * Register class, calculates totalTax, and getPaymentType
  */
 public class Register {
-
+    
+    public enum State {
+        ALABAMA, ALASKA, ARIZONA, ARKASAS, CALIFORNIA, COLORODO, CONNECTICUT, DELEWARE, FLORIDA, GEORGIA, HAWAII, IDAHO,
+        ILLINOIS, INDIANA, IOWA, KANSAS, KENTUCKY, LOUISIANA, MAINE, MARYLAND, MASSACHUSETTS, MICHIGAN, MINNESOTA, MISSISSIPPI, MISSOURI, MONTANA,
+        NEBRASKA, NEVADA, NEW_HAMPSHIRE, NEW_JERSEY, NEW_MEXICO, NEW_YORK, NORTH_CAROLINA, NORTH_DAKOTA, OHIO, OKLAHOMA, OREGON, PENNSYLVANIA,
+        RHODE_ISLAND, SOUTH_CAROLINA, SOUTH_DAKOTA, TENNESSEE, TEXAS, UTAH, VERMONT, VIRGNIA, WASHINGTON, WEST_VIRGINIA, WISCONSIN, WYOMING
+    }  
+  
     int paymentType;
-    //State currentState;
+    State currentState;
+    //TaxCalculator taxCalc = new TaxCalculator();
     Scanner readPaymentType = new Scanner(System.in);
 
     /**
@@ -21,6 +29,7 @@ public class Register {
         for (Item item : cart.items) {
             //totalTax += item.getPrice()*stateTax(currentState, item.getType());
             totalTax += item.getPrice() * .06; //temp until TaxCalculator is implemented
+            //totalTax += item.getPrice() * taxCalc.getTax();
         }
         return totalTax;
     }
@@ -65,7 +74,16 @@ public class Register {
     public void removeFromInventory(int itemNumber, int quantity) {
         //Call the Inventory and remove the denoted quantity from the stock counter
     }
-
+   
+    /**
+     * setState() sets the state for tax purposes
+     * 
+     * @param cState
+     */
+  public void setState(State cState){
+       this.currentState = cState;
+  }
+  
     /**
      * main for Demo purposes only
      *
@@ -74,6 +92,7 @@ public class Register {
     public static void main(String args[]) {
         System.out.println("Welcome to The Pandas' POS Demo");
         Register reg = new Register();
+        reg.setState(State.PENNSYLVANIA);
         Sale sale = new Sale();
         sale.makeSale();
     }

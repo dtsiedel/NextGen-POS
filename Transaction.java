@@ -1,10 +1,9 @@
-//This is now no longer needed.  Leaving this for reference for the time being.
 import java.util.Scanner;
 
 /**
  * Sale class extends Register, performs Sale transaction
  */
-public class Sale extends Register {
+public class Transaction extends Register {
 
     private double total;
     private double tax;
@@ -12,7 +11,8 @@ public class Sale extends Register {
     private final int endOfCart;
     private final int removeItem;
     private int input;
-    private final int cancelSale;
+    private boolean isRental;
+    private final int cancelTransaction;
     Cart currentCart = new Cart();
 
     /**
@@ -20,11 +20,11 @@ public class Sale extends Register {
      * enters -999 to indicate no more items, user enters -1 to remove item
      * previously entered
      */
-    public Sale() {
+    public Transaction() {
         this.nextItem = true;
         this.endOfCart = -999;
         this.removeItem = -1;
-        this.cancelSale = -190;
+        this.cancelTransaction = -190;
         this.input = 0;  /*stores itemNum of currentCart.items.get(index).getItemNumber*/
 
     }
@@ -33,13 +33,13 @@ public class Sale extends Register {
      * makeSale() begins the sale process of reading in items supposedly
      * presented to cashier at checkout
      */
-    public void makeSale() {
-        Scanner sale = new Scanner(System.in);
+    public void makeTransaction() {
+        Scanner transaction = new Scanner(System.in);
         while (nextItem) {
             System.out.print("Enter selection based on indexed ArrayList-"); //temp
-            System.out.print("[OPTIONS: -999 for end of sale, -1 to remove an item, -190 to cancel sale]\n-->");
-            if (sale.hasNextInt()) { //check input type
-                input = sale.nextInt(); //get option or itemNumber
+            System.out.print("[OPTIONS: -999 for end of sale, -1 to remove an item, -190 to cancel transaction]\n-->");
+            if (transaction.hasNextInt()) { //check input type
+                input = transaction.nextInt(); //get option or itemNumber
                 if (input == endOfCart) { //input is -999
                     nextItem = false;
                 } else if (input == removeItem) { //input is -1
@@ -48,10 +48,15 @@ public class Sale extends Register {
                         continue;
                     }
                     System.out.print("Enter an item to remove\n-->");
-                    currentCart.removeItem(sale.nextInt()); //read in another value to remove that item
-                } else if (input == cancelSale) { //input is -190
-                    cancelSale();
+                    currentCart.removeItem(transaction.nextInt()); //read in another value to remove that item
+                } else if (input == cancelTransaction) { //input is -190
+                    cancelTransaction();
                 } else { //input is none of the options, thus possibly a valid itemNumber to add an item to cart
+                    //based on input, return Item from database called item
+                    Item item= database.pull(input);
+                    if(item.getIsRental()){
+                        isRental=true;
+                    }
                     currentCart.add(input);
                 }
             } else {
@@ -59,7 +64,10 @@ public class Sale extends Register {
             }
         }
         tax = getTax(currentCart);
-
+        if(isRental){
+            System.out.println("Please enter your info for the following item rentals");
+            currentCart.printRentals();
+        }
         int pt = getPaymentType();
         total = currentCart.getSubtotal() + tax;
 
@@ -74,9 +82,9 @@ public class Sale extends Register {
      * cancelSale(), set all elements of ArrayList items to null and set size to
      * 0, assumes cancel sale means end program for now0
      */
-    public void cancelSale() {
+    public void cancelTransaction() {
         /*this should set all elements of ArrayList items to null and set size to 0*/
-        System.out.println("Sale was cancelled...CART IS NOW EMPTY!");
+        System.out.println("Transaction was cancelled...CART IS NOW EMPTY!");
         currentCart.items.clear();
         currentCart.clearSubTotal();
         //System.exit(0);
