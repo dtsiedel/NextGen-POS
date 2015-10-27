@@ -19,7 +19,7 @@ public class Item {
      * @param type
      * @param name
      */
-    public Item(boolean r, double p, int num, String type, String name, Double q) {
+    public Item(boolean r, double p, int num, String type, String name, int q) {
         this.isRental = r;
         this.price = p;
         this.itemNumber = num;
