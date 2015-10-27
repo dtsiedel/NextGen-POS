@@ -1,8 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-//TODO: improve encapsulation by adding "getAdjustedString() method"
-//TODO: add methods to change price and quantity
+//TODO: Make all get methods use their own unique SQL call, instead of modifying the same one (like rentable does)
 
 public class SQLInterface
 {
@@ -25,6 +24,39 @@ public class SQLInterface
 
 		return instance;
 	}
+
+	public Boolean isRentable(int id) throws InterruptedException, IOException
+	{
+		String detailString = this.getInfo(id);
+
+		String adjustedString = detailString.replace("|", "~");
+
+		String[] vals = adjustedString.split("~");
+
+		// for(String val:vals)
+		// 	System.out.println(val);
+
+		int rent = Integer.parseInt(vals[4]); //vals[4] contains the "rentable" field
+
+		Boolean rentable = (rent == 1) ? true : false; //more ternary op
+
+		return rentable;
+	}
+
+
+	//returns an Item object associated with the given ID
+	public Item getItem(int id) throws InterruptedException, IOException
+	{
+		Double price = this.getPrice(id);
+		String name = this.getProductName(id);
+		String type = "Database item"; //not sure how we are going to handle this (this.getType? not sure if necessary)
+		Boolean rentable = this.isRentable(id); 
+		int quantity = this.getQuantity(id); //item does not yet take this field
+
+		return new Item(rentable, price, id, type, name, quantity);
+
+	}
+
 
 	//given an id number, prints to stdout relevant information
 	public String getInfo(int id) throws InterruptedException, IOException
@@ -132,11 +164,14 @@ public class SQLInterface
 	//allows for the insertion of a new item into the database
 	//primarily used as a utility function by the database initialization function
 	//it is (currently) the responsibility of the client function to ensure that an id is not occupied before executing this command
-	public void addProduct(int id, String name, Double price, int quantity) throws InterruptedException, IOException
+	public void addProduct(int id, String name, Double price, int quantity, Boolean rentable) throws InterruptedException, IOException
 	{
+		int rent = (rentable) ? 1 : 0; //that ternary operator (1 if rentable, 0 if not)
+
+
 		String base = "INSERT INTO products VALUES("; //base command to insert
 		//then add appropriate parameters
-		String insertCommand = base + Integer.toString(id) + ",\"" + name + "\"," + Double.toString(price) + "," + quantity + ");";
+		String insertCommand = base + Integer.toString(id) + ",\"" + name + "\"," + Double.toString(price) + "," + quantity + "," + rent + ");";
 		
 		String[] commands = {"sqlite3", "products", insertCommand};
 
@@ -170,6 +205,9 @@ public class SQLInterface
 		int quantity = inter.getQuantity(id);
 		System.out.println("Quantity: " + quantity);
 
+		Boolean rent = inter.isRentable(id);
+		System.out.println("Rentable: " + rent);
+
 
 		//test adding an item
 		System.out.print("Add a product? ");
@@ -189,7 +227,16 @@ public class SQLInterface
 			System.out.print("Quantity: ");
 			quantity = sc.nextInt();
 
-			inter.addProduct(id, name, price, quantity);
+			System.out.print("Rentable? (Y/N): ");
+			rent = false;
+			char rentable = sc.next().charAt(0);
+
+			if((rentable == 'y') || (rentable == 'Y'))
+			{
+				rent = true;
+			}
+
+			inter.addProduct(id, name, price, quantity, rent);
 
 			System.out.println("Price of " + name + ": " + inter.getPrice(id));
 
@@ -210,6 +257,20 @@ public class SQLInterface
 			inter.updateQuantity(id, q);
 			System.out.println("Quantity after " + Integer.toString(inter.getQuantity(id)));
 		}
+
+
+		//testing getItem() function (not just individual methods)
+
+		System.out.print("Get total item info for item(provide index): ");
+		id = sc.nextInt();
+
+		Item newItem = inter.getItem(id);
+
+		System.out.println("Price: " + newItem.getPrice());
+		System.out.println("ID:" + newItem.getItemNumber());
+		System.out.println("Name: " + newItem.getName());
+		System.out.println("Rentable? " + newItem.getIsRental());
+		System.out.println("Quantity remaining: " + newItem.getQuantity());
 
 
 	}
