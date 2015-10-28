@@ -2,6 +2,7 @@
 /**
  * cashier to do sale, rental, return
  */
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Cashier {
@@ -20,7 +21,7 @@ public class Cashier {
     /**
      * runs cashier routine, until user terminates
      */
-    public static void cashierDo() {
+    public static void cashierDo() throws InterruptedException, IOException {
         Scanner cashierScan = new Scanner(System.in);
         boolean done = false;
         do {
