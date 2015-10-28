@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 
 import java.io.IOException;
-=======
->>>>>>> refs/remotes/origin/master
 import java.util.Scanner;
 
 /**
@@ -38,11 +35,7 @@ public class Transaction extends Register {
      * makeSale() begins the sale process of reading in items supposedly
      * presented to cashier at checkout
      */
-<<<<<<< HEAD
     public void makeTransaction() throws InterruptedException, IOException {
-=======
-    public void makeTransaction() {
->>>>>>> refs/remotes/origin/master
         Scanner transaction = new Scanner(System.in);
         while (nextItem) {
             System.out.print("Enter selection based on indexed ArrayList-"); //temp
@@ -62,15 +55,10 @@ public class Transaction extends Register {
                     cancelTransaction();
                 } else { //input is none of the options, thus possibly a valid itemNumber to add an item to cart
                     //based on input, return Item from database called item
-<<<<<<< HEAD
+
                     Item item = SQLInterface.getInstance().getItem(input);
                     if (item.getIsRental()) {
                         isRental = true;
-=======
-                    Item item= database.pull(input);
-                    if(item.getIsRental()){
-                        isRental=true;
->>>>>>> refs/remotes/origin/master
                     }
                     currentCart.add(input);
                 }
@@ -79,11 +67,8 @@ public class Transaction extends Register {
             }
         }
         tax = getTax(currentCart);
-<<<<<<< HEAD
+
         if (isRental) {
-=======
-        if(isRental){
->>>>>>> refs/remotes/origin/master
             System.out.println("Please enter your info for the following item rentals");
             currentCart.printRentals();
         }
