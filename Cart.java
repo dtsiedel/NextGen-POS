@@ -17,9 +17,9 @@ public class Cart extends Register {
         this.subTotal = 0.0;
         inventory = new ArrayList<>(); //temp
         items = new ArrayList<>();
-        inventory.add(new Item(1.00, 0, "Pet", "Cat")); //temp
-        inventory.add(new Item(1.00, 1, "Pet", "Dog")); //temp
-        inventory.add(new Item(1.00, 2, "Stuff", "Bin")); //temp
+        inventory.add(new Item(false, 1.00, 0, "Pet", "Cat", 10)); //temp
+        inventory.add(new Item(false, 1.00, 1, "Pet", "Dog", 10)); //temp
+        inventory.add(new Item(true, 1.00, 2, "Stuff", "Bin", 10)); //temp
     }
 
     /**
@@ -72,6 +72,14 @@ public class Cart extends Register {
      */
     public double getSubtotal() {
         return this.subTotal;
+    }
+
+    public void printRentals() {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getIsRental()) {
+                System.out.println(items.get(i).getName() + "   $" + items.get(i).getPrice());
+            }
+        }
     }
 
 }

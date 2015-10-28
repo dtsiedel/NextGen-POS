@@ -9,21 +9,23 @@ public class Item {
     private String itemType;
     private String itemName;
     private int quantity;
+    private boolean isRental;
 
     /**
      * Item constructor
-     *
+     * @param isRental
      * @param p
      * @param num
      * @param type
      * @param name
      */
-    public Item(double p, int num, String type, String name) {
+    public Item(boolean r, double p, int num, String type, String name, int q) {
+        this.isRental = r;
         this.price = p;
         this.itemNumber = num;
         this.itemType = type;
         this.itemName = name;
-        this.quantity = 0;
+        this.quantity = q;
     }
 
     /**
@@ -60,6 +62,14 @@ public class Item {
      */
     public void setQuantity() {
         this.quantity += 1;
+    }
+
+    /*
+    * @return isRental
+    *
+    */
+    public boolean getIsRental(){
+        return isRental;
     }
 
     /**

@@ -1,13 +1,23 @@
 
 import java.util.Scanner;
-import java.util.Date;
 
 /**
  * Register class, calculates totalTax, and getPaymentType
  */
 public class Register {
 
+    public enum State {
+
+        ALABAMA, ALASKA, ARIZONA, ARKASAS, CALIFORNIA, COLORODO, CONNECTICUT, DELEWARE, FLORIDA, GEORGIA, HAWAII, IDAHO,
+        ILLINOIS, INDIANA, IOWA, KANSAS, KENTUCKY, LOUISIANA, MAINE, MARYLAND, MASSACHUSETTS, MICHIGAN, MINNESOTA, MISSISSIPPI, MISSOURI, MONTANA,
+        NEBRASKA, NEVADA, NEW_HAMPSHIRE, NEW_JERSEY, NEW_MEXICO, NEW_YORK, NORTH_CAROLINA, NORTH_DAKOTA, OHIO, OKLAHOMA, OREGON, PENNSYLVANIA,
+        RHODE_ISLAND, SOUTH_CAROLINA, SOUTH_DAKOTA, TENNESSEE, TEXAS, UTAH, VERMONT, VIRGNIA, WASHINGTON, WEST_VIRGINIA, WISCONSIN, WYOMING
+    }
+
     int paymentType;
+    State currentState;
+    //TaxCalculator taxCalc = new TaxCalculator();
+    Scanner readPaymentType = new Scanner(System.in);
 
     /**
      * getTax() calculates totalTax of items in cart
@@ -20,6 +30,7 @@ public class Register {
         for (Item item : cart.items) {
             //totalTax += item.getPrice()*stateTax(currentState, item.getType());
             totalTax += item.getPrice() * .06; //temp until TaxCalculator is implemented
+            //totalTax += item.getPrice() * taxCalc.getTax();
         }
         return totalTax;
     }
@@ -30,10 +41,9 @@ public class Register {
      * @return paymentType
      */
     public int getPaymentType() {
-        Scanner readPaymentMethod = new Scanner(System.in);
         System.out.print("Enter payment method-");
         System.out.print("[OPTIONS: 0 for Cash, 1 for Credit \n-->"); //credit  not implemented yet
-        paymentType = readPaymentMethod.nextInt();
+        paymentType = readPaymentType.nextInt();
         return paymentType;
     }
 
@@ -67,37 +77,37 @@ public class Register {
     }
 
     /**
+     * setState() sets the state for tax purposes
+     *
+     * @param cState
+     */
+    public void setState(State cState) {
+        this.currentState = cState;
+    }
+
+    /**
      * main for Demo purposes only
      *
      * @param args
      */
     public static void main(String args[]) {
-        //log in here
+        System.out.println("Welcome to The Pandas' POS Demo");
         Login l = Login.getInstance();
-        l.startLogin(); //Success?
         Register reg = new Register();
-        System.out.print("Please select an option\n-->");
-        System.out.print("[OPTIONS- 0:Process Sale, 1:Process Rental, 2: Process Return, -1:Exit]");
-        Scanner opt = new Scanner(System.in);
-        switch (opt.nextInt()) {
-            case 0:
-                Sale sale = new Sale();
-                sale.makeSale();
-                break;
-            case 1:
-                //Rental rent = new Rental();
-                //rental.makeRental();
-                break;
-            case 2:
-                //Return return = new Return();
-                //return.makeReturn();
-                break;
-            case -1:
-                //CALL run() from java.Runtime.shutdownhook()...make method above
-                break;
-            default:
-                //PUT STUFF HERE!!!
-                break;
-        }
+        boolean done = false;
+        reg.setState(State.PENNSYLVANIA);
+        do {
+            System.out.println("Welcome to The Panda's Next Gen POS!");
+            System.out.println("************************************");
+            System.out.println("************ Main Menu *************");
+            System.out.println("***********************************");
+            int rout = l.startLogin(); //Success?
+            if (rout == -1) {
+                Cashier.cashierDo();
+            } else if (rout == -0) {
+                Manager.managerDo();
+            }
+            //some while loop here to keep running cashier/manager routines until done
+        } while (!done);
     }
 }
