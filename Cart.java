@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 
 /**
@@ -73,6 +72,12 @@ public class Cart extends Register {
     public double getSubtotal() {
         return this.subTotal;
     }
+    public void printRentals(){
+        for(int i=0; i<items.size(); i++)
+            if(items.get(i).getIsRental())
+                System.out.println(items.get(i).getName()+"   $"+items.get(i).getPrice());
+    }
+    
 
     public void printRentals() {
         for (int i = 0; i < items.size(); i++) {

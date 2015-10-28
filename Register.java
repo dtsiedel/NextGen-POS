@@ -5,15 +5,25 @@ import java.util.Scanner;
  * Register class, calculates totalTax, and getPaymentType
  */
 public class Register {
+<<<<<<< HEAD
 
     public enum State {
 
+=======
+    
+    public enum State {
+>>>>>>> refs/remotes/origin/master
         ALABAMA, ALASKA, ARIZONA, ARKASAS, CALIFORNIA, COLORODO, CONNECTICUT, DELEWARE, FLORIDA, GEORGIA, HAWAII, IDAHO,
         ILLINOIS, INDIANA, IOWA, KANSAS, KENTUCKY, LOUISIANA, MAINE, MARYLAND, MASSACHUSETTS, MICHIGAN, MINNESOTA, MISSISSIPPI, MISSOURI, MONTANA,
         NEBRASKA, NEVADA, NEW_HAMPSHIRE, NEW_JERSEY, NEW_MEXICO, NEW_YORK, NORTH_CAROLINA, NORTH_DAKOTA, OHIO, OKLAHOMA, OREGON, PENNSYLVANIA,
         RHODE_ISLAND, SOUTH_CAROLINA, SOUTH_DAKOTA, TENNESSEE, TEXAS, UTAH, VERMONT, VIRGNIA, WASHINGTON, WEST_VIRGINIA, WISCONSIN, WYOMING
+<<<<<<< HEAD
     }
 
+=======
+    }  
+  
+>>>>>>> refs/remotes/origin/master
     int paymentType;
     State currentState;
     //TaxCalculator taxCalc = new TaxCalculator();
@@ -75,7 +85,16 @@ public class Register {
     public void removeFromInventory(int itemNumber, int quantity) {
         //Call the Inventory and remove the denoted quantity from the stock counter
     }
-
+   
+    /**
+     * setState() sets the state for tax purposes
+     * 
+     * @param cState
+     */
+  public void setState(State cState){
+       this.currentState = cState;
+  }
+  
     /**
      * setState() sets the state for tax purposes
      *
@@ -94,6 +113,7 @@ public class Register {
         System.out.println("Welcome to The Pandas' POS Demo");
         Login l = Login.getInstance();
         Register reg = new Register();
+<<<<<<< HEAD
         boolean done = false;
         reg.setState(State.PENNSYLVANIA);
         do {
@@ -109,5 +129,10 @@ public class Register {
             }
             //some while loop here to keep running cashier/manager routines until done
         } while (!done);
+=======
+        reg.setState(State.PENNSYLVANIA);
+        Sale sale = new Sale();
+        sale.makeSale();
+>>>>>>> refs/remotes/origin/master
     }
 }
