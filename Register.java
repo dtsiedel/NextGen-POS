@@ -44,7 +44,7 @@ public class Register {
      */
     public int getPaymentType() {
         System.out.print("Enter payment method-");
-        System.out.print("[OPTIONS: 0 for Cash, 1 for Credit \n-->"); //credit  not implemented yet
+        System.out.print("[OPTIONS: 0 for Cash\n-->"); //credit  not implemented yet
         this.paymentType = readPaymentType.nextInt();
         return this.paymentType;
     }

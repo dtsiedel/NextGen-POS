@@ -17,9 +17,9 @@ public class Cart extends Register {
         this.subTotal = 0.0;
         inventory = new ArrayList<>(); //temp
         items = new ArrayList<>();
-        inventory.add(new Item(false, 1.00, 0, "Pet", "Cat", 10)); //temp
-        inventory.add(new Item(false, 1.00, 1, "Pet", "Dog", 10)); //temp
-        inventory.add(new Item(true, 1.00, 2, "Stuff", "Bin", 10)); //temp
+        inventory.add(new Item(false, 1.00, 0, "Cat", 10)); //temp
+        inventory.add(new Item(false, 1.00, 1, "Dog", 10)); //temp
+        inventory.add(new Item(true, 1.00, 2, "Bin", 10)); //temp
     }
 
     /**
