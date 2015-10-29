@@ -7,6 +7,9 @@ public class SQLInterface
 {
 	private static SQLInterface instance; //for implementation of singleton
 
+	private final static String sqlite = "sqlite3"; //the version of sqlite in use
+	private final static String dbName = "data";    //the name of the database being used
+
 	//private constructor prevents outside clases from accessing
 	private SQLInterface()  
 	{
@@ -32,7 +35,7 @@ public class SQLInterface
 	//					 then compare their input to result of getPassword(username)
 	public String getPassword(String username) throws InterruptedException, IOException
 	{
-		String[] command = {"sqlite3", "data", "SELECT password FROM users WHERE name="};
+		String[] command = {sqlite, dbName, "SELECT password FROM users WHERE name="};
 		command[2] = command[2] + "\"" + username + "\";";
 
 		// for(String s : command)
@@ -71,6 +74,19 @@ public class SQLInterface
 
 	}
 
+	//adds a user to the database, given the username and password. 
+	public void addUser(String username, String password) throws InterruptedException, IOException
+	{
+		String[] command = {sqlite, dbName, "INSERT INTO users VALUES(\""};
+		command[2] = command[2] + username + "\",\"" + password + "\");";
+
+		ProcessBuilder pb = new ProcessBuilder(command);
+		Process add = pb.start();
+
+		add.waitFor(); //wait for add to finish before proceeding
+
+	}
+
 	public Boolean isRentable(int id) throws InterruptedException, IOException
 	{
 		String detailString = this.getInfo(id);
@@ -78,9 +94,6 @@ public class SQLInterface
 		String adjustedString = detailString.replace("|", "~");
 
 		String[] vals = adjustedString.split("~");
-
-		// for(String val:vals)
-		// 	System.out.println(val);
 
 		int rent = Integer.parseInt(vals[4]); //vals[4] contains the "rentable" field
 
@@ -109,7 +122,7 @@ public class SQLInterface
 	{
 
 		//call sqlite command to access database
-		String[] command = {"sqlite3", "data", "SELECT * FROM products WHERE id = "};
+		String[] command = {sqlite, dbName, "SELECT * FROM products WHERE id = "};
 		command[2] = command[2] + Integer.toString(id) + ";";
 		ProcessBuilder pb = new ProcessBuilder(command);
 
@@ -195,7 +208,7 @@ public class SQLInterface
 
 		String base = "UPDATE products SET quantity=";
 		String command = base + Integer.toString(newQuant) + " WHERE id=" + Integer.toString(id);
-		String[] update = {"sqlite3", "data", command};
+		String[] update = {sqlite, dbName, command};
 
 		//System.out.println(command);
 		ProcessBuilder pb = new ProcessBuilder(update);
@@ -219,7 +232,7 @@ public class SQLInterface
 		//then add appropriate parameters
 		String insertCommand = base + Integer.toString(id) + ",\"" + name + "\"," + Double.toString(price) + "," + quantity + "," + rent + ");";
 		
-		String[] commands = {"sqlite3", "data", insertCommand};
+		String[] commands = {sqlite, dbName, insertCommand};
 
 
 		ProcessBuilder pb = new ProcessBuilder(commands);
@@ -264,6 +277,19 @@ public class SQLInterface
 		}
 
 
+		System.out.print("Enter a new user? (y/n): ");
+		char cont = sc.next().charAt(0); 
+		if((cont == 'y') || (cont == 'Y'))
+		{
+			System.out.print("Enter username of new user: ");
+			String newUser = sc.next();
+			System.out.print("Enter the password of the new user: ");
+			String newPass = sc.next();
+
+			inter.addUser(newUser, newPass);
+		}
+
+
 		//test basic accessing of fields
 		System.out.print("Enter the ID of the product you wish to learn about: ");
 		int id = sc.nextInt();
@@ -284,7 +310,7 @@ public class SQLInterface
 
 		//test adding an item
 		System.out.print("Add a product? (y/n): ");
-		char cont = sc.next().charAt(0);
+		cont = sc.next().charAt(0);
 
 		if((cont == 'y') || (cont == 'Y'))
 		{
