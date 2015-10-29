@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-//TODO: Make all get methods use their own unique SQL call, instead of modifying the same one (like rentable does)
+//TODO: make a function to perform a SQL operation and return the result (given a string of commands) to improve cohesion
 
 public class SQLInterface
 {
@@ -23,6 +23,52 @@ public class SQLInterface
 		}
 
 		return instance;
+	}
+
+
+	//given a username, returns the password associated with it (unencrypted, yay)
+	//if the name is not in the db, prints an error string and returns a tilde (indicates an error)
+	//recommended usage: scan in username and password from user,
+	//					 then compare their input to result of getPassword(username)
+	public String getPassword(String username) throws InterruptedException, IOException
+	{
+		String[] command = {"sqlite3", "data", "SELECT password FROM users WHERE name="};
+		command[2] = command[2] + "\"" + username + "\";";
+
+		// for(String s : command)
+		// 	System.out.println(s);
+
+		ProcessBuilder pb = new ProcessBuilder(command);
+
+
+		File outfile = new File("output.txt"); //write output to a file
+		pb.redirectOutput(outfile);
+		pb.redirectError(outfile);
+		Process get = pb.start(); //execute the command loaded prior
+		get.waitFor(); //wait for operation to finish
+
+
+		String[] deleteCommand = {"rm", "output.txt"};
+		ProcessBuilder deleter = new ProcessBuilder(deleteCommand); //to get rid of the text file you made
+
+
+		File f = new File("output.txt"); //read file output (can't redirect output with '>' in this context)
+		Scanner sc = new Scanner(f);
+
+		if(f.length() == 0) //if there are no lines in the output, item not found
+		{
+			System.out.println("User not found, ensure you did not make a typo and try again.");
+			deleter.start(); ///delete output.txt
+			return "~"; 
+		}
+
+		String result = sc.nextLine();
+
+		Process delete = deleter.start(); ///delete output.txt
+		delete.waitFor(); //wait for delete process to finish before proceeding
+
+		return result;
+
 	}
 
 	public Boolean isRentable(int id) throws InterruptedException, IOException
@@ -63,7 +109,7 @@ public class SQLInterface
 	{
 
 		//call sqlite command to access database
-		String[] command = {"sqlite3", "products", "SELECT * FROM products WHERE id = "};
+		String[] command = {"sqlite3", "data", "SELECT * FROM products WHERE id = "};
 		command[2] = command[2] + Integer.toString(id) + ";";
 		ProcessBuilder pb = new ProcessBuilder(command);
 
@@ -149,7 +195,7 @@ public class SQLInterface
 
 		String base = "UPDATE products SET quantity=";
 		String command = base + Integer.toString(newQuant) + " WHERE id=" + Integer.toString(id);
-		String[] update = {"sqlite3", "products", command};
+		String[] update = {"sqlite3", "data", command};
 
 		//System.out.println(command);
 		ProcessBuilder pb = new ProcessBuilder(update);
@@ -173,7 +219,7 @@ public class SQLInterface
 		//then add appropriate parameters
 		String insertCommand = base + Integer.toString(id) + ",\"" + name + "\"," + Double.toString(price) + "," + quantity + "," + rent + ");";
 		
-		String[] commands = {"sqlite3", "products", insertCommand};
+		String[] commands = {"sqlite3", "data", insertCommand};
 
 
 		ProcessBuilder pb = new ProcessBuilder(commands);
@@ -189,9 +235,36 @@ public class SQLInterface
 
 		SQLInterface inter = SQLInterface.getInstance();
 
-		//test basic accessing of fields
 		Scanner sc = new Scanner(System.in);
 
+		//testing users database
+		System.out.println("Testing user database: \n");
+
+		System.out.print("Enter Username: (users: test, demo): ");
+		String username = sc.next();
+		System.out.print("Enter your password: ");
+		String givenPassword = sc.next();
+
+		String actualPassword = inter.getPassword(username); //the actual password in the db
+		
+
+		if(actualPassword.equals("~")) //indicating username is not in db
+		{
+			System.exit(0);
+		}
+
+		if(givenPassword.equals(inter.getPassword(username))) //indicating the password matches
+		{
+			System.out.println("\nWelcome, " + username);
+		}
+		else
+		{
+			System.out.println("Password does not match.");
+			System.exit(0);
+		}
+
+
+		//test basic accessing of fields
 		System.out.print("Enter the ID of the product you wish to learn about: ");
 		int id = sc.nextInt();
 
@@ -210,7 +283,7 @@ public class SQLInterface
 
 
 		//test adding an item
-		System.out.print("Add a product? ");
+		System.out.print("Add a product? (y/n): ");
 		char cont = sc.next().charAt(0);
 
 		if((cont == 'y') || (cont == 'Y'))
@@ -242,7 +315,7 @@ public class SQLInterface
 
 		}
 
-		System.out.print("Change the quantity of a product?");
+		System.out.print("Change the quantity of a product? (y/n): ");
 		cont = sc.next().charAt(0);
 
 		if((cont == 'y') || (cont == 'Y'))
@@ -271,6 +344,7 @@ public class SQLInterface
 		System.out.println("Name: " + newItem.getName());
 		System.out.println("Rentable? " + newItem.getIsRental());
 		System.out.println("Quantity remaining: " + newItem.getQuantity());
+		
 
 
 	}
