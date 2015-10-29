@@ -5,73 +5,9 @@ import java.util.*;
 //TODO: make a function to perform a SQL operation and return the result (given a string of commands) to improve cohesion
 public class SQLInterface {
 
-<<<<<<< HEAD
     private static SQLInterface instance; //for implementation of singleton
-=======
-public class SQLInterface
-{
-	private static SQLInterface instance; //for implementation of singleton
 
-	private final static String sqlite = "sqlite3"; //the version of sqlite in use
-	private final static String dbName = "data";    //the name of the database being used
-
-	//private constructor prevents outside clases from accessing
-	private SQLInterface()  
-	{
-		//intentionally blank
-	}
-
-	//returns the instance if it exists, or makes exactly one if 
-	//one does not yet exist
-	public synchronized static SQLInterface getInstance()
-	{
-		if(instance == null)
-		{
-			instance = new SQLInterface();
-		}
-
-		return instance;
-	}
-
-
-	//given a username, returns the password associated with it (unencrypted, yay)
-	//if the name is not in the db, prints an error string and returns a tilde (indicates an error)
-	//recommended usage: scan in username and password from user,
-	//					 then compare their input to result of getPassword(username)
-	public String getPassword(String username) throws InterruptedException, IOException
-	{
-		String[] command = {sqlite, dbName, "SELECT password FROM users WHERE name="};
-		command[2] = command[2] + "\"" + username + "\";";
-
-		// for(String s : command)
-		// 	System.out.println(s);
-
-		ProcessBuilder pb = new ProcessBuilder(command);
-
-
-		File outfile = new File("output.txt"); //write output to a file
-		pb.redirectOutput(outfile);
-		pb.redirectError(outfile);
-		Process get = pb.start(); //execute the command loaded prior
-		get.waitFor(); //wait for operation to finish
-
-
-		String[] deleteCommand = {"rm", "output.txt"};
-		ProcessBuilder deleter = new ProcessBuilder(deleteCommand); //to get rid of the text file you made
-
-
-		File f = new File("output.txt"); //read file output (can't redirect output with '>' in this context)
-		Scanner sc = new Scanner(f);
-
-		if(f.length() == 0) //if there are no lines in the output, item not found
-		{
-			System.out.println("User not found, ensure you did not make a typo and try again.");
-			deleter.start(); ///delete output.txt
-			return "~"; 
-		}
->>>>>>> refs/remotes/origin/master
-
-    private final static String sqlite = ".\\sqlite3"; //the version of sqlite in use
+    private final static String sqlite = "sqlite3"; //the version of sqlite in use
     private final static String dbName = "data";    //the name of the database being used
 
     //private constructor prevents outside clases from accessing
@@ -89,7 +25,6 @@ public class SQLInterface
         return instance;
     }
 
-<<<<<<< HEAD
     //given a username, returns the password associated with it (unencrypted, yay)
     //if the name is not in the db, prints an error string and returns a tilde (indicates an error)
     //recommended usage: scan in username and password from user,
@@ -97,24 +32,6 @@ public class SQLInterface
     public String getPassword(String username) throws InterruptedException, IOException {
         String[] command = {sqlite, dbName, "SELECT password FROM users WHERE name="};
         command[2] = command[2] + "\"" + username + "\";";
-=======
-	//adds a user to the database, given the username and password. 
-	public void addUser(String username, String password) throws InterruptedException, IOException
-	{
-		String[] command = {sqlite, dbName, "INSERT INTO users VALUES(\""};
-		command[2] = command[2] + username + "\",\"" + password + "\");";
-
-		ProcessBuilder pb = new ProcessBuilder(command);
-		Process add = pb.start();
-
-		add.waitFor(); //wait for add to finish before proceeding
-
-	}
-
-	public Boolean isRentable(int id) throws InterruptedException, IOException
-	{
-		String detailString = this.getInfo(id);
->>>>>>> refs/remotes/origin/master
 
         // for(String s : command)
         // 	System.out.println(s);
@@ -126,15 +43,11 @@ public class SQLInterface
         Process get = pb.start(); //execute the command loaded prior
         get.waitFor(); //wait for operation to finish
 
-<<<<<<< HEAD
         String[] deleteCommand = {"rm", "output.txt"};
         ProcessBuilder deleter = new ProcessBuilder(deleteCommand); //to get rid of the text file you made
 
         File f = new File("output.txt"); //read file output (can't redirect output with '>' in this context)
         Scanner sc = new Scanner(f);
-=======
-		int rent = Integer.parseInt(vals[4]); //vals[4] contains the "rentable" field
->>>>>>> refs/remotes/origin/master
 
         if (f.length() == 0) //if there are no lines in the output, item not found
         {
@@ -162,14 +75,7 @@ public class SQLInterface
 
         add.waitFor(); //wait for add to finish before proceeding
 
-<<<<<<< HEAD
     }
-=======
-		//call sqlite command to access database
-		String[] command = {sqlite, dbName, "SELECT * FROM products WHERE id = "};
-		command[2] = command[2] + Integer.toString(id) + ";";
-		ProcessBuilder pb = new ProcessBuilder(command);
->>>>>>> refs/remotes/origin/master
 
     public Boolean isRentable(int id) throws InterruptedException, IOException {
         String detailString = this.getInfo(id);
@@ -252,13 +158,7 @@ public class SQLInterface
 
         String adjustedString = detailString.replace("|", "~");
 
-<<<<<<< HEAD
         String[] vals = adjustedString.split("~");
-=======
-		String base = "UPDATE products SET quantity=";
-		String command = base + Integer.toString(newQuant) + " WHERE id=" + Integer.toString(id);
-		String[] update = {sqlite, dbName, command};
->>>>>>> refs/remotes/origin/master
 
         return vals[1];
     }
@@ -275,20 +175,12 @@ public class SQLInterface
 
     }
 
-<<<<<<< HEAD
     //updates the quantity of an item. First int is the id, the second is the 
     //amount to increment. to decrement, provide a negative number (most common use)
     //returns the updated value
     public int updateQuantity(int id, int quantityChange) throws InterruptedException, IOException {
         int currentQuant = this.getQuantity(id);
         int newQuant = currentQuant + quantityChange;
-=======
-		String base = "INSERT INTO products VALUES("; //base command to insert
-		//then add appropriate parameters
-		String insertCommand = base + Integer.toString(id) + ",\"" + name + "\"," + Double.toString(price) + "," + quantity + "," + rent + ");";
-		
-		String[] commands = {sqlite, dbName, insertCommand};
->>>>>>> refs/remotes/origin/master
 
         String base = "UPDATE products SET quantity=";
         String command = base + Integer.toString(newQuant) + " WHERE id=" + Integer.toString(id);
@@ -331,29 +223,10 @@ public class SQLInterface
         //testing users database
         System.out.println("Testing user database: \n");
 
-<<<<<<< HEAD
         System.out.print("Enter Username: (users: test, demo): ");
         String username = sc.next();
         System.out.print("Enter your password: ");
         String givenPassword = sc.next();
-=======
-		System.out.print("Enter a new user? (y/n): ");
-		char cont = sc.next().charAt(0); 
-		if((cont == 'y') || (cont == 'Y'))
-		{
-			System.out.print("Enter username of new user: ");
-			String newUser = sc.next();
-			System.out.print("Enter the password of the new user: ");
-			String newPass = sc.next();
-
-			inter.addUser(newUser, newPass);
-		}
-
-
-		//test basic accessing of fields
-		System.out.print("Enter the ID of the product you wish to learn about: ");
-		int id = sc.nextInt();
->>>>>>> refs/remotes/origin/master
 
         String actualPassword = inter.getPassword(username); //the actual password in the db
 
@@ -385,14 +258,8 @@ public class SQLInterface
         System.out.print("Enter the ID of the product you wish to learn about: ");
         int id = sc.nextInt();
 
-<<<<<<< HEAD
         Double price = inter.getPrice(id);
         System.out.println("Price: " + price);
-=======
-		//test adding an item
-		System.out.print("Add a product? (y/n): ");
-		cont = sc.next().charAt(0);
->>>>>>> refs/remotes/origin/master
 
         String name = inter.getProductName(id);
         System.out.println("Name: " + name);
