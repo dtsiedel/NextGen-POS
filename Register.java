@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -14,9 +15,10 @@ public class Register {
         RHODE_ISLAND, SOUTH_CAROLINA, SOUTH_DAKOTA, TENNESSEE, TEXAS, UTAH, VERMONT, VIRGNIA, WASHINGTON, WEST_VIRGINIA, WISCONSIN, WYOMING
     }
 
-    int paymentType;
+    private int paymentType;
     State currentState;
     //TaxCalculator taxCalc = new TaxCalculator();
+    //SQLInterface invenDB = SQLInterface.getInstance(); this or just keep using SQLInterface.getInstance().methods??
     Scanner readPaymentType = new Scanner(System.in);
 
     /**
@@ -43,8 +45,8 @@ public class Register {
     public int getPaymentType() {
         System.out.print("Enter payment method-");
         System.out.print("[OPTIONS: 0 for Cash, 1 for Credit \n-->"); //credit  not implemented yet
-        paymentType = readPaymentType.nextInt();
-        return paymentType;
+        this.paymentType = readPaymentType.nextInt();
+        return this.paymentType;
     }
 
     /**
@@ -63,17 +65,18 @@ public class Register {
      * @param itemNumber
      */
     public void removeFromInventory(int itemNumber) {
-        //Call the Inventory and decrement the stock counter by 1
+        /*SQLInterface.getInstance().removeItem(itemNumber)*/
     }
 
     /**
      * removeFromInventory(), removes quantity of specified item via itemNumber
      *
-     * @param itemNumber
+     * @param id
      * @param quantity
      */
-    public void removeFromInventory(int itemNumber, int quantity) {
-        //Call the Inventory and remove the denoted quantity from the stock counter
+    public void removeFromInventory(int id, int quantity) {
+        //Observer design pattern here?
+        /*SQLInterface.getInstance().updateQuantity(id, quantity)*/
     }
 
     /**
@@ -89,9 +92,10 @@ public class Register {
      * main for Demo purposes only
      *
      * @param args
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
-    public static void main(String args[]) {
-        System.out.println("Welcome to The Pandas' POS Demo");
+    public static void main(String args[]) throws InterruptedException, IOException {
         Login l = Login.getInstance();
         Register reg = new Register();
         boolean done = false;
@@ -107,7 +111,6 @@ public class Register {
             } else if (rout == -0) {
                 Manager.managerDo();
             }
-            //some while loop here to keep running cashier/manager routines until done
         } while (!done);
     }
 }

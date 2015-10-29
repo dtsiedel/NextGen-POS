@@ -23,7 +23,7 @@ public class Cart extends Register {
     }
 
     /**
-     * add(int itemNumber) adds an item to the cart from the inventory
+     * adds an item to the cart from the inventory
      *
      * @param itemNumber
      */

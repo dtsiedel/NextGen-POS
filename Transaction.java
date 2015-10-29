@@ -38,7 +38,7 @@ public class Transaction extends Register {
     public void makeTransaction() throws InterruptedException, IOException {
         Scanner transaction = new Scanner(System.in);
         while (nextItem) {
-            System.out.print("Enter selection based on indexed ArrayList-"); //temp
+            System.out.print("Enter item ID"); //temp
             System.out.print("[OPTIONS: -999 for end of sale, -1 to remove an item, -190 to cancel transaction]\n-->");
             if (transaction.hasNextInt()) { //check input type
                 input = transaction.nextInt(); //get option or itemNumber
@@ -69,6 +69,7 @@ public class Transaction extends Register {
         tax = getTax(currentCart);
 
         if (isRental) {
+            //what info are we entering?
             System.out.println("Please enter your info for the following item rentals");
             currentCart.printRentals();
         }

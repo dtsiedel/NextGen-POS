@@ -7,15 +7,25 @@ import java.util.Scanner;
 
 public class Cashier {
 
+    private String uName;
     private int id;
     private int pw;
 
     public Cashier() {
     }
 
-    public Cashier(int i, int p) {
+    public Cashier(String un, int i, int p) {
+        this.uName = un;
         this.id = i;
-        this.pw = p; //this seems kind of silly should make this better??
+        this.pw = p;
+    }
+
+    /**
+     *
+     * @return username
+     */
+    public String getUserName() {
+        return this.uName;
     }
 
     /**
@@ -26,30 +36,27 @@ public class Cashier {
         boolean done = false;
         do {
             System.out.print("Please select an option\n-->");
-            System.out.print("[OPTIONS- 0:Process Sale, 1:Process Rental, 2: Process Return, -1:Logout, -2:Exit]");
+            System.out.print("[OPTIONS- 0:Process Sale, 1: Process Return, -1:Logout]");
             switch (cashierScan.nextInt()) {
                 case 0:
                     Transaction trans = new Transaction();
                     trans.makeTransaction();
                     break;
+                //case 1:
+                //Rental rent = new Rental();
+                //rental.makeRental();
+                //  break;
                 case 1:
-                    //Rental rent = new Rental();
-                    //rental.makeRental();
-                    break;
-                case 2:
-                    //Return return = new Return();
-                    //return.makeReturn();
+                    Return ret = new Return();
+                    ret.makeReturn();
                     break;
                 case -1:
                     //logout
                     System.out.println("Logging Out!");
                     done = true;
                     break;
-                case -2:
-                    //CALL run() from java.Runtime.shutdownhook()...make method above
-                    break;
                 default:
-                    //PUT STUFF HERE!!!
+                    System.out.println("Invalid input, please try again!");
                     break;
             }
         } while (!done);

@@ -28,10 +28,11 @@ public class Login {
         Scanner id = new Scanner(System.in);
         int ret = -9999;
         do {
-            System.out.print("Please enter Login\n-->");
-            //would need to check database, default 1111 - cashier, 2222- manager
+            System.out.print("Please enter User Name\n-->"); //get a keyboard up for GUI is that hard?
             input = id.next();
-            if (Integer.parseInt(input) == 1111) { //temp cashier login
+            String givenPW = id.next();
+            /*String actualPW = SQLInterface.getInstance().getPassword(input);*/
+            if (false /*givenPW.equals(SQLInterface.getInstance().getPassword(input)*/) { //temp cashier login
                 System.out.println("Cashier Login Success");
                 this.done = true;
                 ret = cashierIn;
@@ -39,13 +40,14 @@ public class Login {
                 System.out.println("Manager Login Success");
                 this.done = true;
                 ret = mngIn;
-            } else if (Integer.parseInt(input) != 1111 && Integer.parseInt(input) != 2222) { //temp 1111 and temp 2222
+            } else if (false /*actualPW.equals("~") || !(givenPW.equals.(SQLInterface.getInstance().getPassword(input)))*/) { /*lockout not implemented for testing*/
                 //attempts--;
                 //if(attempts == 0){
                 //    System.out.println("Too many attempts, exiting");
                 //    System.exit(1);
                 //}
-                System.out.println("Invalid ID, Remaining Attempts: " + attempts);
+
+                System.out.println("Invalid User Name/Password, Remaining Attempts: " + attempts);
             }
         } while (!done);
         return ret;

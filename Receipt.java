@@ -8,7 +8,7 @@ public class Receipt {
 
     private Cart cart;
     private double tax;
-    private int paymentMethod;  //0: Cash, 1: Credit Card, 2:Check
+    private int paymentMethod;  //0: Cash - just accept cash for the alpha
 
     /**
      * Receipt constructor
@@ -43,5 +43,8 @@ public class Receipt {
      */
     public void store() {
         //Code To Store Receipt in receipt object database
+        /*what field are we using to get the receipt from the DB?
+         that is why I had a date field associated with a receipt*/
+        //SQLInterface.getInstance.getReceipt(FILL IN SOMETHING);
     }
 }

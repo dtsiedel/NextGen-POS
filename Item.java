@@ -13,6 +13,7 @@ public class Item {
 
     /**
      * Item constructor
+     *
      * @param isRental
      * @param p
      * @param num
@@ -65,11 +66,11 @@ public class Item {
     }
 
     /*
-    * @return isRental
-    *
-    */
-    public boolean getIsRental(){
-        return isRental;
+     * @return isRental
+     *
+     */
+    public boolean getIsRental() {
+        return this.isRental;
     }
 
     /**
