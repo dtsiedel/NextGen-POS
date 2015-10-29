@@ -18,7 +18,7 @@ To Do:
 	- shutdown - wait for manager execution of shutdown - DONE
 	- Login - Broken for now 
 -User Management
-	- add users to DB - 
+	- add users to DB - Done
 	- delete users from DB - 
 -NumberFormatExceptions
 -Tax Calculator
