@@ -1,0 +1,27 @@
+To Do:
+-fully integrate with DB
+-fully integrate with GUI
+-Rental
+	- rent the rental - 
+	- return the rental - 
+	- Update DB accordingly - 
+-Return
+	- Update the DB - 
+	- Refund customer - 
+-Transaction
+	- buy an item - DONE
+	- end the sale, print receipt - DONE
+	- buy multiple items - 
+	- Update DB - 
+-Startup/Shutdown
+	- startup - execute program - DONE?
+	- shutdown - wait for manager execution of shutdown - DONE
+	- Login - Broken for now 
+-User Management
+	- add users to DB - 
+	- delete users from DB - 
+-NumberFormatExceptions
+-Tax Calculator
+	-Integrate with trans. and rental
+-Remote services unavailable, still run
+	- capable of handling cash and sale
