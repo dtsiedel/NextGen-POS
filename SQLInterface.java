@@ -3,7 +3,9 @@ import java.io.*;
 import java.util.*;
 
 //TODO: make a function to perform a SQL operation and return the result (given a string of commands) to improve cohesion
-public class SQLInterface {
+
+public class SQLInterface 
+{
 
     private static SQLInterface instance; //for implementation of singleton
 
@@ -11,14 +13,17 @@ public class SQLInterface {
     private final static String dbName = "data";    //the name of the database being used
 
     //private constructor prevents outside clases from accessing
-    private SQLInterface() {
+    private SQLInterface() 
+    {
         //intentionally blank
     }
 
     //returns the instance if it exists, or makes exactly one if 
     //one does not yet exist
-    public synchronized static SQLInterface getInstance() {
-        if (instance == null) {
+    public synchronized static SQLInterface getInstance() 
+    {
+        if (instance == null) 
+        {
             instance = new SQLInterface();
         }
 
@@ -29,12 +34,11 @@ public class SQLInterface {
     //if the name is not in the db, prints an error string and returns a tilde (indicates an error)
     //recommended usage: scan in username and password from user,
     //					 then compare their input to result of getPassword(username)
-    public String getPassword(String username) throws InterruptedException, IOException {
+    public String getPassword(String username) throws InterruptedException, IOException 
+    {
         String[] command = {sqlite, dbName, "SELECT password FROM users WHERE name="};
         command[2] = command[2] + "\"" + username + "\";";
 
-        // for(String s : command)
-        // 	System.out.println(s);
         ProcessBuilder pb = new ProcessBuilder(command);
 
         File outfile = new File("output.txt"); //write output to a file
@@ -65,10 +69,26 @@ public class SQLInterface {
 
     }
 
-    //adds a user to the database, given the username and password. 
-    public void addUser(String username, String password) throws InterruptedException, IOException {
+    //deletes a user by their username
+    //it is up to the caller to ensure that the one executing this is an admin
+    public void deleteUser(String username) throws InterruptedException, IOException
+    {
+    	String[] command = {sqlite, dbName, "DELETE FROM users WHERE name=\""};
+        command[2] = command[2] + username + "\";";
+
+
+        ProcessBuilder pb = new ProcessBuilder(command);
+        Process add = pb.start();
+        add.waitFor(); //wait for add to finish before proceeding
+    }	
+
+    //adds a user to the database, given the username and password, as well as whether they are a manager. 
+    public void addUser(String username, String password, Boolean manager) throws InterruptedException, IOException 
+    {
+    	int man = (manager) ? 1 : 0;
+
         String[] command = {sqlite, dbName, "INSERT INTO users VALUES(\""};
-        command[2] = command[2] + username + "\",\"" + password + "\");";
+        command[2] = command[2] + username + "\",\"" + password + "\", " + Integer.toString(man) + ");";
 
         ProcessBuilder pb = new ProcessBuilder(command);
         Process add = pb.start();
@@ -77,7 +97,48 @@ public class SQLInterface {
 
     }
 
-    public Boolean isRentable(int id) throws InterruptedException, IOException {
+    //returns whether the given username corresponds to a manager (else is cashier)
+    public Boolean isManager(String user) throws InterruptedException, IOException 
+    {
+        String[] command = {sqlite, dbName, "SELECT manager FROM users WHERE name =\""};
+        command[2] = command[2] + user + "\";";
+
+
+        ProcessBuilder pb = new ProcessBuilder(command);
+        File outfile = new File("output.txt"); //write output to a file
+        pb.redirectOutput(outfile);
+        pb.redirectError(outfile);
+        Process get = pb.start();
+
+        get.waitFor();
+
+
+        String[] deleteCommand = {"rm", "output.txt"};
+        ProcessBuilder deleter = new ProcessBuilder(deleteCommand); //to get rid of the text file you made
+
+        File f = new File("output.txt"); //read file output (can't redirect output with '>' in this context)
+        Scanner sc = new Scanner(f);
+
+        if (f.length() == 0) //if there are no lines in the output, item not found
+        {
+            System.out.println("User not found, ensure you did not make a typo and try again.");
+            deleter.start(); ///delete output.txt
+            return false;
+        }
+
+        String rent = sc.nextLine();
+
+        Process delete = deleter.start(); ///delete output.txt
+        delete.waitFor(); //wait for delete process to finish before proceeding
+
+        Boolean rentable = (rent.equals("1")) ? true : false; //more ternary op
+
+        return rentable;
+    }
+
+    //returns whether the given int corresponds to a rentable item or not
+    public Boolean isRentable(int id) throws InterruptedException, IOException 
+    {
         String detailString = this.getInfo(id);
 
         String adjustedString = detailString.replace("|", "~");
@@ -92,7 +153,8 @@ public class SQLInterface {
     }
 
     //returns an Item object associated with the given ID
-    public Item getItem(int id) throws InterruptedException, IOException {
+    public Item getItem(int id) throws InterruptedException, IOException 
+    {
         Double price = this.getPrice(id);
         String name = this.getProductName(id);
         Boolean rentable = this.isRentable(id);
@@ -103,7 +165,8 @@ public class SQLInterface {
     }
 
     //given an id number, prints to stdout relevant information
-    public String getInfo(int id) throws InterruptedException, IOException {
+    public String getInfo(int id) throws InterruptedException, IOException 
+    {
 
         //call sqlite command to access database
         String[] command = {sqlite, dbName, "SELECT * FROM products WHERE id = "};
@@ -140,7 +203,8 @@ public class SQLInterface {
     }
 
     //returns just the price based on id
-    public Double getPrice(int id) throws InterruptedException, IOException {
+    public Double getPrice(int id) throws InterruptedException, IOException 
+    {
         String detailString = this.getInfo(id);
 
         //weird workaround because Java's split method doesn't work on "|" character
@@ -153,7 +217,8 @@ public class SQLInterface {
     }
 
     //returns the name of the product based on id
-    public String getProductName(int id) throws InterruptedException, IOException {
+    public String getProductName(int id) throws InterruptedException, IOException 
+    {
         String detailString = this.getInfo(id);
 
         String adjustedString = detailString.replace("|", "~");
@@ -164,7 +229,8 @@ public class SQLInterface {
     }
 
     //returns the current quantity of the item in stock
-    public int getQuantity(int id) throws InterruptedException, IOException {
+    public int getQuantity(int id) throws InterruptedException, IOException 
+    {
         String detailString = this.getInfo(id);
 
         String adjustedString = detailString.replace("|", "~");
@@ -178,7 +244,8 @@ public class SQLInterface {
     //updates the quantity of an item. First int is the id, the second is the 
     //amount to increment. to decrement, provide a negative number (most common use)
     //returns the updated value
-    public int updateQuantity(int id, int quantityChange) throws InterruptedException, IOException {
+    public int updateQuantity(int id, int quantityChange) throws InterruptedException, IOException 
+    {
         int currentQuant = this.getQuantity(id);
         int newQuant = currentQuant + quantityChange;
 
@@ -198,7 +265,8 @@ public class SQLInterface {
     //allows for the insertion of a new item into the database
     //primarily used as a utility function by the database initialization function
     //it is (currently) the responsibility of the client function to ensure that an id is not occupied before executing this command
-    public void addProduct(int id, String name, Double price, int quantity, Boolean rentable) throws InterruptedException, IOException {
+    public void addProduct(int id, String name, Double price, int quantity, Boolean rentable) throws InterruptedException, IOException 
+    {
         int rent = (rentable) ? 1 : 0; //that ternary operator (1 if rentable, 0 if not)
 
         String base = "INSERT INTO products VALUES("; //base command to insert
@@ -213,10 +281,12 @@ public class SQLInterface {
 
     }
 
+
     //test stub, just runs through the functions
     public static void main(String[] args) throws InterruptedException, IOException {
 
         SQLInterface inter = SQLInterface.getInstance();
+        String name;
 
         Scanner sc = new Scanner(System.in);
 
@@ -250,9 +320,37 @@ public class SQLInterface {
             String newUser = sc.next();
             System.out.print("Enter the password of the new user: ");
             String newPass = sc.next();
+            System.out.print("Enter y if they are a manager: ");
+            cont = sc.next().charAt(0);
+            Boolean manager = false;
+            if((cont == 'y') | (cont == 'Y'))
+            {
+            	manager = true;
+            }
 
-            inter.addUser(newUser, newPass);
+            inter.addUser(newUser, newPass, manager);
         }
+
+        //get the manager status of a user
+        System.out.print("Get the manager status of a user? (y/n): ");
+        cont = sc.next().charAt(0);
+
+        if((cont == 'y') || (cont == 'Y'))
+        {
+        	System.out.print("Enter user name: ");
+        	name = sc.next();
+        	System.out.println(inter.isManager(name));
+        }
+
+        //testing delete user
+        System.out.print("Delete a user? (y/n): ");
+        cont = sc.next().charAt(0);
+        if((cont == 'Y') || (cont == 'y'))
+        {
+	        System.out.print("Enter user to delete: ");
+	        name = sc.next();
+	        inter.deleteUser(name);
+	    }
 
         //test basic accessing of fields
         System.out.print("Enter the ID of the product you wish to learn about: ");
@@ -261,7 +359,7 @@ public class SQLInterface {
         Double price = inter.getPrice(id);
         System.out.println("Price: " + price);
 
-        String name = inter.getProductName(id);
+        name = inter.getProductName(id);
         System.out.println("Name: " + name);
 
         int quantity = inter.getQuantity(id);
@@ -327,6 +425,8 @@ public class SQLInterface {
         System.out.println("Name: " + newItem.getName());
         System.out.println("Rentable? " + newItem.getIsRental());
         System.out.println("Quantity remaining: " + newItem.getQuantity());
+
+
 
     }
 
