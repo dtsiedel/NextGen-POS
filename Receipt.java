@@ -9,6 +9,7 @@ public class Receipt {
     private Cart cart;
     private double tax;
     private int paymentMethod;  //0: Cash - just accept cash for the alpha
+    private int id;             //tracks the receipt's ID. ID is assigned when receipt is added to db
 
     /**
      * Receipt constructor
@@ -27,6 +28,7 @@ public class Receipt {
      * print(), prints subtotal, tax and total
      */
     public void print() {
+        //IMPORTANT: receipt must be stored before it is printed, in order to get its id
         DecimalFormat df = new DecimalFormat("0.00");
         //System.out.println("Item (Quantity)" + "\t\t" + "Price\n"); //fix later
         for (Item item : cart.items) { //for each item in cart
@@ -36,6 +38,8 @@ public class Receipt {
         System.out.println("\n\tOrder Subtotal:\t$" + df.format(cart.getSubtotal()));
         System.out.println("\tTotal Tax:\t$" + df.format(tax));
         System.out.println("\nOrder Total:\t$" + df.format(cart.getSubtotal() + tax));
+        //System.out.println("Receipt ID: " + this.id"); //this line is why you need to store() before you print(),
+        //or store() a single time at the beginning of the print method
     }
 
     /**
@@ -43,8 +47,8 @@ public class Receipt {
      */
     public void store() {
         //Code To Store Receipt in receipt object database
-        /*what field are we using to get the receipt from the DB?
-         that is why I had a date field associated with a receipt*/
-        //SQLInterface.getInstance.getReceipt(FILL IN SOMETHING);
+        //receipts will be stored by their id number, which will be assigned at creation by the database
+        //int receiptId = ReceiptManager.getInstance.storeReceipt(this);
+        //this.id = receiptId;
     }
 }
