@@ -11,6 +11,8 @@ public class Login {
     private String input;
     private int attempts = 5;
     private boolean done = false;
+    private final int cashierIn = -1;
+    private final int mngIn = -0;
 
     private Login() {
     }
@@ -22,23 +24,32 @@ public class Login {
         return inst;
     }
 
-    public void startLogin() {
+    public int startLogin() {
         Scanner id = new Scanner(System.in);
-        while (!done) {
-            System.out.print("Please enter Cashier Login\n-->");
-            //would need to check database, default 1111
+        int ret = -9999;
+        do {
+            System.out.print("Please enter User Name\n-->"); //get a keyboard up for GUI is that hard?
             input = id.next();
-            if (Integer.parseInt(input) == 1111) { //temp
-                System.out.println("Success");
+            String givenPW = id.next();
+            /*String actualPW = SQLInterface.getInstance().getPassword(input);*/
+            if (false /*givenPW.equals(SQLInterface.getInstance().getPassword(input)*/) { //temp cashier login
+                System.out.println("Cashier Login Success");
                 this.done = true;
-            } else if (Integer.parseInt(input) != 1111) { //temp 1111
+                ret = cashierIn;
+            } else if (Integer.parseInt(input) == 2222) { //temp manager login
+                System.out.println("Manager Login Success");
+                this.done = true;
+                ret = mngIn;
+            } else if (false /*actualPW.equals("~") || !(givenPW.equals.(SQLInterface.getInstance().getPassword(input)))*/) { /*lockout not implemented for testing*/
                 //attempts--;
                 //if(attempts == 0){
                 //    System.out.println("Too many attempts, exiting");
                 //    System.exit(1);
                 //}
-                System.out.println("Invalid ID, Remaining Attempts: " + attempts);
+
+                System.out.println("Invalid User Name/Password, Remaining Attempts: " + attempts);
             }
-        }
+        } while (!done);
+        return ret;
     }
 }

@@ -17,25 +17,25 @@ public class Cart extends Register {
         this.subTotal = 0.0;
         inventory = new ArrayList<>(); //temp
         items = new ArrayList<>();
-        inventory.add(new Item(1.00, 0, "Pet", "Cat")); //temp
-        inventory.add(new Item(1.00, 1, "Pet", "Dog")); //temp
-        inventory.add(new Item(1.00, 2, "Stuff", "Bin")); //temp
+
     }
 
     /**
-     * add(int itemNumber) adds an item to the cart from the inventory
+     * adds an item to the cart from the inventory
      *
      * @param itemNumber
      */
-    public void add(int itemNumber) {
-        if (itemNumber > (inventory.size() - 1) || itemNumber < 0) { //check itemNumber is a valid index in temp inv ArrayList
-            System.out.println("INVALID INDEX...Try Again");
-        } else {
-            items.add(inventory.get(itemNumber)); //add the valid item to cart ArrayList
-            //items.get(itemNumber).setQuantity(); //keep track of quantity, do later
-            System.out.println(inventory.get(itemNumber).getName() + " was added to cart!");
-            subTotal += items.get(items.size() - 1).getPrice(); //calculate running subTotal of cart per item
-        }
+    //needs to be changed with new update
+    public void add(Item item) 
+    {
+        inventory.add(item);
+        this.subTotal += item.getPrice();
+    }
+
+    //get method for inventory arraylist
+    public ArrayList getInventory()
+    {
+        return this.inventory;
     }
 
     /**
@@ -72,6 +72,14 @@ public class Cart extends Register {
      */
     public double getSubtotal() {
         return this.subTotal;
+    }
+
+    public void printRentals() {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getIsRental()) {
+                System.out.println(items.get(i).getName() + "   $" + items.get(i).getPrice());
+            }
+        }
     }
 
 }

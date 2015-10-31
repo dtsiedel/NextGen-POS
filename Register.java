@@ -1,13 +1,25 @@
 
+import java.io.IOException;
 import java.util.Scanner;
-import java.util.Date;
 
 /**
  * Register class, calculates totalTax, and getPaymentType
  */
 public class Register {
 
-    int paymentType;
+    public enum State {
+
+        ALABAMA, ALASKA, ARIZONA, ARKASAS, CALIFORNIA, COLORODO, CONNECTICUT, DELEWARE, FLORIDA, GEORGIA, HAWAII, IDAHO,
+        ILLINOIS, INDIANA, IOWA, KANSAS, KENTUCKY, LOUISIANA, MAINE, MARYLAND, MASSACHUSETTS, MICHIGAN, MINNESOTA, MISSISSIPPI, MISSOURI, MONTANA,
+        NEBRASKA, NEVADA, NEW_HAMPSHIRE, NEW_JERSEY, NEW_MEXICO, NEW_YORK, NORTH_CAROLINA, NORTH_DAKOTA, OHIO, OKLAHOMA, OREGON, PENNSYLVANIA,
+        RHODE_ISLAND, SOUTH_CAROLINA, SOUTH_DAKOTA, TENNESSEE, TEXAS, UTAH, VERMONT, VIRGNIA, WASHINGTON, WEST_VIRGINIA, WISCONSIN, WYOMING
+    }
+
+    private int paymentType;
+    State currentState;
+    //TaxCalculator taxCalc = new TaxCalculator();
+    //SQLInterface invenDB = SQLInterface.getInstance(); this or just keep using SQLInterface.getInstance().methods??
+    Scanner readPaymentType = new Scanner(System.in);
 
     /**
      * getTax() calculates totalTax of items in cart
@@ -20,6 +32,7 @@ public class Register {
         for (Item item : cart.items) {
             //totalTax += item.getPrice()*stateTax(currentState, item.getType());
             totalTax += item.getPrice() * .06; //temp until TaxCalculator is implemented
+            //totalTax += item.getPrice() * taxCalc.getTax();
         }
         return totalTax;
     }
@@ -30,11 +43,10 @@ public class Register {
      * @return paymentType
      */
     public int getPaymentType() {
-        Scanner readPaymentMethod = new Scanner(System.in);
         System.out.print("Enter payment method-");
-        System.out.print("[OPTIONS: 0 for Cash, 1 for Credit \n-->"); //credit  not implemented yet
-        paymentType = readPaymentMethod.nextInt();
-        return paymentType;
+        System.out.print("[OPTIONS: 0 for Cash\n-->"); //credit  not implemented yet
+        this.paymentType = readPaymentType.nextInt();
+        return this.paymentType;
     }
 
     /**
@@ -53,51 +65,52 @@ public class Register {
      * @param itemNumber
      */
     public void removeFromInventory(int itemNumber) {
-        //Call the Inventory and decrement the stock counter by 1
+        /*SQLInterface.getInstance().removeItem(itemNumber)*/
     }
 
     /**
      * removeFromInventory(), removes quantity of specified item via itemNumber
      *
-     * @param itemNumber
+     * @param id
      * @param quantity
      */
-    public void removeFromInventory(int itemNumber, int quantity) {
-        //Call the Inventory and remove the denoted quantity from the stock counter
+    public void removeFromInventory(int id, int quantity) {
+        //Observer design pattern here?
+        /*SQLInterface.getInstance().updateQuantity(id, quantity)*/
+    }
+
+    /**
+     * setState() sets the state for tax purposes
+     *
+     * @param cState
+     */
+    public void setState(State cState) {
+        this.currentState = cState;
     }
 
     /**
      * main for Demo purposes only
      *
      * @param args
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
-    public static void main(String args[]) {
-        //log in here
+    public static void main(String args[]) throws InterruptedException, IOException {
         Login l = Login.getInstance();
-        l.startLogin(); //Success?
         Register reg = new Register();
-        System.out.print("Please select an option\n-->");
-        System.out.print("[OPTIONS- 0:Process Sale, 1:Process Rental, 2: Process Return, -1:Exit]");
-        Scanner opt = new Scanner(System.in);
-        switch (opt.nextInt()) {
-            case 0:
-                Sale sale = new Sale();
-                sale.makeSale();
-                break;
-            case 1:
-                //Rental rent = new Rental();
-                //rental.makeRental();
-                break;
-            case 2:
-                //Return return = new Return();
-                //return.makeReturn();
-                break;
-            case -1:
-                //CALL run() from java.Runtime.shutdownhook()...make method above
-                break;
-            default:
-                //PUT STUFF HERE!!!
-                break;
-        }
+        boolean done = false;
+        reg.setState(State.PENNSYLVANIA);
+        do {
+            System.out.println("Welcome to The Panda's Next Gen POS!");
+            System.out.println("************************************");
+            System.out.println("************ Main Menu *************");
+            System.out.println("***********************************");
+            int rout = l.startLogin(); //Success?
+            if (rout == -1) {
+                Cashier.cashierDo();
+            } else if (rout == -0) {
+                Manager.managerDo();
+            }
+        } while (!done);
     }
 }
