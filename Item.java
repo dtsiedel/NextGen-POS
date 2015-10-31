@@ -47,12 +47,6 @@ public class Item {
         return itemName;
     }
 
-    /**
-     * @return itemType
-     */
-    public String getType() {
-        return itemType;
-    }
 
     /**
      * setQuantity assigns number of items
