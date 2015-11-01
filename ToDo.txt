@@ -16,11 +16,11 @@ To Do:
 -Startup/Shutdown
 	- startup - execute program - DONE?
 	- shutdown - wait for manager execution of shutdown - DONE
-	- Login - Broken for now 
+	- Login - Should be working
 -User Management
 	- add users to DB - Done
 	- delete users from DB - 
--NumberFormatExceptions
+-NumberFormatExceptions - Done?
 -Tax Calculator
 	-Integrate with trans. and rental
 -Remote services unavailable, still run
