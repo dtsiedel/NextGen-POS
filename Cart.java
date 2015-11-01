@@ -6,7 +6,7 @@ import java.util.ArrayList;
  */
 public class Cart extends Register {
 
-    private ArrayList<Item> cart;
+    private ArrayList<Item> inventory;
     //protected ArrayList<Item> items;
     private double subTotal;
 
@@ -15,7 +15,7 @@ public class Cart extends Register {
      */
     public Cart() {
         this.subTotal = 0.0;
-        cart = new ArrayList<>(); //temp
+        inventory = new ArrayList<>(); //temp
         //items = new ArrayList<>();
 
     }
@@ -27,7 +27,7 @@ public class Cart extends Register {
      */
     //needs to be changed with new update
     public void add(Item item) {
-        cart.add(item);
+        inventory.add(item);
         this.subTotal += item.getPrice();
     }
 
@@ -39,13 +39,13 @@ public class Cart extends Register {
      */
     public void addMultItems(Item item, int q) {
         for (int i = 0; i < q; i++) {
-            cart.add(item);
+            inventory.add(item);
         }
     }
 
     //get method for inventory arraylist
     public ArrayList getInventory() {
-        return this.cart;
+        return this.inventory;
     }
 
     /**
@@ -58,12 +58,12 @@ public class Cart extends Register {
         //itemNumber = getItemNum.nextInt();
         //int index - items.lastIndexOf(Inventory.findItem(itemNumber));
         int index = -1;
-        if (itemNumber <= (cart.size() - 1)) {
-            index = cart.lastIndexOf(cart.get(itemNumber));
+        if (itemNumber <= (inventory.size() - 1)) {
+            index = inventory.lastIndexOf(inventory.get(itemNumber));
             if (index != -1) {
-                System.out.println(cart.get(index).getName() + " was removed from cart!");
-                subTotal -= cart.get(index).getPrice();
-                cart.remove(index);
+                System.out.println(inventory.get(index).getName() + " was removed from cart!");
+                subTotal -= inventory.get(index).getPrice();
+                inventory.remove(index);
             }
         } else {
             System.out.println("No such item exists in this Cart.");
@@ -85,9 +85,9 @@ public class Cart extends Register {
     }
 
     public void printRentals() {
-        for (int i = 0; i < cart.size(); i++) {
-            if (cart.get(i).getIsRental()) {
-                System.out.println(cart.get(i).getName() + "   $" + cart.get(i).getPrice());
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.get(i).getIsRental()) {
+                System.out.println(inventory.get(i).getName() + "   $" + inventory.get(i).getPrice());
             }
         }
     }
