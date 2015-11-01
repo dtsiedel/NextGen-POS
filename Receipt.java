@@ -18,6 +18,7 @@ public class Receipt {
      * @param c
      * @param t
      * @param pm
+     * @param id
      */
     public Receipt(Cart c, double t, int pm, int id) {
         this.cart = c;
@@ -37,20 +38,21 @@ public class Receipt {
         this.cart = c;
         this.tax = t;
         this.paymentMethod = pm;
-        this.id = id;
+        this.id = id; //oops?
     }
 
     //set method
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
     /**
      * print(), prints subtotal, tax and total
+     *
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
-    public void print() throws InterruptedException, IOException 
-    {
+    public void print() throws InterruptedException, IOException {
         //IMPORTANT: receipt must be stored before it is printed, in order to get its id
         DecimalFormat df = new DecimalFormat("0.00");
         //System.out.println("Item (Quantity)" + "\t\t" + "Price\n"); //fix later
@@ -66,16 +68,17 @@ public class Receipt {
     }
 
     //get method for cart
-    public Cart getCart()
-    {
+    public Cart getCart() {
         return this.cart;
     }
 
     /**
      * store(), stores receipt in database implemented later
+     *
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
-    public void store() throws InterruptedException, IOException 
-    {
+    public void store() throws InterruptedException, IOException {
         //Code To Store Receipt in receipt object database
         //receipts will be stored by their id number, which will be assigned at creation by the database
         //note: do not store receipts multiple times, it will create unneccesary databse entries

@@ -6,8 +6,8 @@ import java.util.ArrayList;
  */
 public class Cart extends Register {
 
-    private ArrayList<Item> inventory;  //temp
-    protected ArrayList<Item> items;
+    private ArrayList<Item> cart;
+    //protected ArrayList<Item> items;
     private double subTotal;
 
     /**
@@ -15,27 +15,37 @@ public class Cart extends Register {
      */
     public Cart() {
         this.subTotal = 0.0;
-        inventory = new ArrayList<>(); //temp
-        items = new ArrayList<>();
+        cart = new ArrayList<>(); //temp
+        //items = new ArrayList<>();
 
     }
 
     /**
      * adds an item to the cart from the inventory
      *
-     * @param itemNumber
+     * @param item
      */
     //needs to be changed with new update
-    public void add(Item item) 
-    {
-        inventory.add(item);
+    public void add(Item item) {
+        cart.add(item);
         this.subTotal += item.getPrice();
     }
 
+    /**
+     * adds n items to the cart
+     *
+     * @param item
+     * @param q
+     */
+    public void addMultItems(Item item, int q) {
+        for (int i = 0; i < q; i++) {
+            cart.add(item);
+        }
+    }
+
     //get method for inventory arraylist
-    public ArrayList getInventory()
-    {
-        return this.inventory;
+    public ArrayList getInventory() {
+        return this.cart;
     }
 
     /**
@@ -48,12 +58,12 @@ public class Cart extends Register {
         //itemNumber = getItemNum.nextInt();
         //int index - items.lastIndexOf(Inventory.findItem(itemNumber));
         int index = -1;
-        if (itemNumber <= (items.size() - 1)) {
-            index = items.lastIndexOf(items.get(itemNumber));
+        if (itemNumber <= (cart.size() - 1)) {
+            index = cart.lastIndexOf(cart.get(itemNumber));
             if (index != -1) {
-                System.out.println(items.get(index).getName() + " was removed from cart!");
-                subTotal -= items.get(index).getPrice();
-                items.remove(index);
+                System.out.println(cart.get(index).getName() + " was removed from cart!");
+                subTotal -= cart.get(index).getPrice();
+                cart.remove(index);
             }
         } else {
             System.out.println("No such item exists in this Cart.");
@@ -75,9 +85,9 @@ public class Cart extends Register {
     }
 
     public void printRentals() {
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getIsRental()) {
-                System.out.println(items.get(i).getName() + "   $" + items.get(i).getPrice());
+        for (int i = 0; i < cart.size(); i++) {
+            if (cart.get(i).getIsRental()) {
+                System.out.println(cart.get(i).getName() + "   $" + cart.get(i).getPrice());
             }
         }
     }
