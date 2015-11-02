@@ -29,8 +29,8 @@ public class Return {
             if (retID == SQLInterface.getInstance().getItem(retID).getItemNumber()) { //check if the entered ID matches the supposed item's ID in the DB
                 System.out.print("Enter quantity of item to be returned\n-->");
                 int retQ = retScan.nextInt();
-                double amt = retQ * SQLInterface.getInstance().getItem(retID).getPrice();
-                System.out.println("Your refunded amount is: " + amt);
+                SQLInterface.getInstance().updateQuantity(retID, retQ);
+                System.out.println("Your refunded amount is: " + (retQ * SQLInterface.getInstance().getPrice(retID)));
                 retQ += SQLInterface.getInstance().getItem(retID).getQuantity(); //get the current value and add it to the number of items being returned
                 SQLInterface.getInstance().updateQuantity(retID, retQ); //update DB
             } else if (retID == -111) {

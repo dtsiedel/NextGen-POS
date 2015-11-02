@@ -3,13 +3,14 @@
  * used to login to register and begin performing actions
  *
  */
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Login {
 
     private static Login inst;
-    private String input;
-    private int attempts = 5;
+    private String uName;
+    private final int attempts = 5;
     private boolean done = false;
     private final int cashierIn = -1;
     private final int mngIn = -0;
@@ -24,23 +25,32 @@ public class Login {
         return inst;
     }
 
-    public int startLogin() {
+    /**
+     * start login, searches db for user name, matches and prompts for pw then
+     * if correct pw, will log user in based on manager status
+     *
+     * @return @throws InterruptedException
+     * @throws IOException
+     */
+    public int startLogin() throws InterruptedException, IOException {
         Scanner id = new Scanner(System.in);
         int ret = -9999;
         do {
-            System.out.print("Please enter User Name\n-->"); //get a keyboard up for GUI is that hard?
-            input = id.next();
+            System.out.print("Please enter User Name\n-->"); //get a keyboard up for GUI
+            this.uName = id.next();
+            System.out.print("Please enter password\n-->");
             String givenPW = id.next();
-            /*String actualPW = SQLInterface.getInstance().getPassword(input);*/
-            if (false /*givenPW.equals(SQLInterface.getInstance().getPassword(input)*/) { //temp cashier login
-                System.out.println("Cashier Login Success");
-                this.done = true;
-                ret = cashierIn;
-            } else if (Integer.parseInt(input) == 2222) { //temp manager login
-                System.out.println("Manager Login Success");
-                this.done = true;
-                ret = mngIn;
-            } else if (false /*actualPW.equals("~") || !(givenPW.equals.(SQLInterface.getInstance().getPassword(input)))*/) { /*lockout not implemented for testing*/
+            if (givenPW.equals(SQLInterface.getInstance().getPassword(this.uName))) { //checks db for matching username and password
+                if (SQLInterface.getInstance().isManager(this.uName)) {
+                    System.out.println("Manager Login Success");
+                    this.done = true;
+                    ret = mngIn;
+                } else if (!(SQLInterface.getInstance().isManager(this.uName))) {
+                    System.out.println("Cashier Login Success");
+                    this.done = true;
+                    ret = cashierIn;
+                }
+            } else if (SQLInterface.getInstance().getPassword(this.uName).equals("~") || !(givenPW.contentEquals(SQLInterface.getInstance().getPassword(this.uName)))) {
                 //attempts--;
                 //if(attempts == 0){
                 //    System.out.println("Too many attempts, exiting");

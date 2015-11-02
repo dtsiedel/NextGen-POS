@@ -33,8 +33,6 @@ public class SQLInterface {
         String[] command = {sqlite, dbName, "SELECT password FROM users WHERE name="};
         command[2] = command[2] + "\"" + username + "\";";
 
-        // for(String s : command)
-        // 	System.out.println(s);
         ProcessBuilder pb = new ProcessBuilder(command);
 
         File outfile = new File("output.txt"); //write output to a file
@@ -65,10 +63,23 @@ public class SQLInterface {
 
     }
 
-    //adds a user to the database, given the username and password. 
-    public void addUser(String username, String password) throws InterruptedException, IOException {
+    //deletes a user by their username
+    //it is up to the caller to ensure that the one executing this is an admin
+    public void deleteUser(String username) throws InterruptedException, IOException {
+        String[] command = {sqlite, dbName, "DELETE FROM users WHERE name=\""};
+        command[2] = command[2] + username + "\";";
+
+        ProcessBuilder pb = new ProcessBuilder(command);
+        Process add = pb.start();
+        add.waitFor(); //wait for add to finish before proceeding
+    }
+
+    //adds a user to the database, given the username and password, as well as whether they are a manager. 
+    public void addUser(String username, String password, Boolean manager) throws InterruptedException, IOException {
+        int man = (manager) ? 1 : 0;
+
         String[] command = {sqlite, dbName, "INSERT INTO users VALUES(\""};
-        command[2] = command[2] + username + "\",\"" + password + "\");";
+        command[2] = command[2] + username + "\",\"" + password + "\", " + Integer.toString(man) + ");";
 
         ProcessBuilder pb = new ProcessBuilder(command);
         Process add = pb.start();
@@ -77,6 +88,43 @@ public class SQLInterface {
 
     }
 
+    //returns whether the given username corresponds to a manager (else is cashier)
+    public Boolean isManager(String user) throws InterruptedException, IOException {
+        String[] command = {sqlite, dbName, "SELECT manager FROM users WHERE name =\""};
+        command[2] = command[2] + user + "\";";
+
+        ProcessBuilder pb = new ProcessBuilder(command);
+        File outfile = new File("output.txt"); //write output to a file
+        pb.redirectOutput(outfile);
+        pb.redirectError(outfile);
+        Process get = pb.start();
+
+        get.waitFor();
+
+        String[] deleteCommand = {"rm", "output.txt"};
+        ProcessBuilder deleter = new ProcessBuilder(deleteCommand); //to get rid of the text file you made
+
+        File f = new File("output.txt"); //read file output (can't redirect output with '>' in this context)
+        Scanner sc = new Scanner(f);
+
+        if (f.length() == 0) //if there are no lines in the output, item not found
+        {
+            System.out.println("User not found, ensure you did not make a typo and try again.");
+            deleter.start(); ///delete output.txt
+            return false;
+        }
+
+        String mng = sc.nextLine();
+
+        Process delete = deleter.start(); ///delete output.txt
+        delete.waitFor(); //wait for delete process to finish before proceeding
+
+        Boolean isMng = (mng.equals("1")); //more ternary op
+
+        return isMng;
+    }
+
+    //returns whether the given int corresponds to a rentable item or not
     public Boolean isRentable(int id) throws InterruptedException, IOException {
         String detailString = this.getInfo(id);
 
@@ -217,6 +265,7 @@ public class SQLInterface {
     public static void main(String[] args) throws InterruptedException, IOException {
 
         SQLInterface inter = SQLInterface.getInstance();
+        String name;
 
         Scanner sc = new Scanner(System.in);
 
@@ -250,8 +299,33 @@ public class SQLInterface {
             String newUser = sc.next();
             System.out.print("Enter the password of the new user: ");
             String newPass = sc.next();
+            System.out.print("Enter y if they are a manager: ");
+            cont = sc.next().charAt(0);
+            Boolean manager = false;
+            if ((cont == 'y') | (cont == 'Y')) {
+                manager = true;
+            }
 
-            inter.addUser(newUser, newPass);
+            inter.addUser(newUser, newPass, manager);
+        }
+
+        //get the manager status of a user
+        System.out.print("Get the manager status of a user? (y/n): ");
+        cont = sc.next().charAt(0);
+
+        if ((cont == 'y') || (cont == 'Y')) {
+            System.out.print("Enter user name: ");
+            name = sc.next();
+            System.out.println(inter.isManager(name));
+        }
+
+        //testing delete user
+        System.out.print("Delete a user? (y/n): ");
+        cont = sc.next().charAt(0);
+        if ((cont == 'Y') || (cont == 'y')) {
+            System.out.print("Enter user to delete: ");
+            name = sc.next();
+            inter.deleteUser(name);
         }
 
         //test basic accessing of fields
@@ -261,7 +335,7 @@ public class SQLInterface {
         Double price = inter.getPrice(id);
         System.out.println("Price: " + price);
 
-        String name = inter.getProductName(id);
+        name = inter.getProductName(id);
         System.out.println("Name: " + name);
 
         int quantity = inter.getQuantity(id);

@@ -29,7 +29,7 @@ public class Register {
      */
     public double getTax(Cart cart) {
         double totalTax = 0.0;
-        for (Item item : cart.items) {
+        for (Item item : cart.inventory) {
             //totalTax += item.getPrice()*stateTax(currentState, item.getType());
             totalTax += item.getPrice() * .06; //temp until TaxCalculator is implemented
             //totalTax += item.getPrice() * taxCalc.getTax();
@@ -65,7 +65,7 @@ public class Register {
      * @param itemNumber
      */
     public void removeFromInventory(int itemNumber) {
-        /*SQLInterface.getInstance().removeItem(itemNumber)*/
+        //SQLInterface.getInstance().removeItem(itemNumber);
     }
 
     /**
@@ -73,10 +73,11 @@ public class Register {
      *
      * @param id
      * @param quantity
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
-    public void removeFromInventory(int id, int quantity) {
-        //Observer design pattern here?
-        /*SQLInterface.getInstance().updateQuantity(id, quantity)*/
+    public void removeFromInventory(int id, int quantity) throws InterruptedException, IOException {
+        SQLInterface.getInstance().updateQuantity(id, (quantity * -1));
     }
 
     /**

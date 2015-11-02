@@ -13,9 +13,10 @@ public class Item {
     /**
      * Item constructor
      *
-     * @param isRental
+     * @param r
      * @param p
      * @param num
+     * @param q
      * @param name
      */
     public Item(boolean r, double p, int num, String name, int q) {
@@ -45,13 +46,6 @@ public class Item {
      */
     public String getName() {
         return itemName;
-    }
-
-    /**
-     * @return itemType
-     */
-    public String getType() {
-        return itemType;
     }
 
     /**
