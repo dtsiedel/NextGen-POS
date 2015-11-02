@@ -40,8 +40,13 @@ public class Manager {
         Scanner managerScan = new Scanner(System.in);
         boolean done = false;
         do {
+<<<<<<< HEAD
             System.out.print("Please select an option");
             System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, -1:Logout, -2:Shutdown]\n-->");
+=======
+            System.out.print("Please select an option\n-->");
+            System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, -1:Logout, -2:Shutdown]");
+>>>>>>> origin/POSUpdate
             try {
                 switch (managerScan.nextInt()) {
                     case 0:
