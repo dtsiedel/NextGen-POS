@@ -38,13 +38,8 @@ public class Cashier {
         Scanner cashierScan = new Scanner(System.in);
         boolean done = false;
         do {
-<<<<<<< HEAD
             System.out.print("Please select an option");
             System.out.print("[OPTIONS- 0:Process Transaction, 1: Process Return, -1:Logout]\n-->");
-=======
-            System.out.print("Please select an option\n-->");
-            System.out.print("[OPTIONS- 0:Process Transaction, 1: Process Return, -1:Logout]");
->>>>>>> origin/POSUpdate
             try {
                 switch (cashierScan.nextInt()) {
                     case 0:

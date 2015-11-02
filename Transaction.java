@@ -49,11 +49,7 @@ public class Transaction extends Register {
                     if (input == endOfCart) { //input is -999
                         nextItem = false;
                     } else if (input == removeItem) { //input is -1
-<<<<<<< HEAD
                         if (currentCart.inventory.isEmpty()) {
-=======
-                        if (currentCart.items.isEmpty()) {
->>>>>>> origin/POSUpdate
                             System.out.println("NO ITEMS TO BE REMOVED");
                             continue;
                         }
