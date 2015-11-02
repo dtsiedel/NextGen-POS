@@ -56,7 +56,7 @@ public class Receipt {
         //IMPORTANT: receipt must be stored before it is printed, in order to get its id
         DecimalFormat df = new DecimalFormat("0.00");
         //System.out.println("Item (Quantity)" + "\t\t" + "Price\n"); //fix later
-        for (Item item : cart.items) { //for each item in cart
+        for (Item item : cart.inventory) { //for each item in cart
             //System.out.println(item.getName() + "\t(" + item.getQuantity() + ")" + "\t\t$" + df.format(item.getPrice())); //fix later
             System.out.println(item.getName() + "\t\t$" + df.format(item.getPrice()));
         }

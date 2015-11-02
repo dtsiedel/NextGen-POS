@@ -6,7 +6,8 @@ import java.util.ArrayList;
  */
 public class Cart extends Register {
 
-    private ArrayList<Item> inventory;
+    protected ArrayList<Item> inventory;
+
     //protected ArrayList<Item> items;
     private double subTotal;
 
@@ -44,6 +45,10 @@ public class Cart extends Register {
     }
 
     //get method for inventory arraylist
+    /**
+     *
+     * @return inventory
+     */
     public ArrayList getInventory() {
         return this.inventory;
     }

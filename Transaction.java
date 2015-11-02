@@ -49,7 +49,7 @@ public class Transaction extends Register {
                     if (input == endOfCart) { //input is -999
                         nextItem = false;
                     } else if (input == removeItem) { //input is -1
-                        if (currentCart.items.isEmpty()) {
+                        if (currentCart.inventory.isEmpty()) {
                             System.out.println("NO ITEMS TO BE REMOVED");
                             continue;
                         }
@@ -113,7 +113,7 @@ public class Transaction extends Register {
     public void cancelTransaction() {
         /*this should set all elements of ArrayList items to null and set size to 0*/
         System.out.println("Transaction was cancelled...CART IS NOW EMPTY!");
-        currentCart.items.clear();
+        currentCart.inventory.clear();
         currentCart.clearSubTotal();
         //System.exit(0);
     }
