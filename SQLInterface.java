@@ -262,146 +262,146 @@ public class SQLInterface {
     }
 
     //test stub, just runs through the functions
-    public static void main(String[] args) throws InterruptedException, IOException {
+    // public static void main(String[] args) throws InterruptedException, IOException {
 
-        SQLInterface inter = SQLInterface.getInstance();
-        String name;
+    //     SQLInterface inter = SQLInterface.getInstance();
+    //     String name;
 
-        Scanner sc = new Scanner(System.in);
+    //     Scanner sc = new Scanner(System.in);
 
-        //testing users database
-        System.out.println("Testing user database: \n");
+    //     //testing users database
+    //     System.out.println("Testing user database: \n");
 
-        System.out.print("Enter Username: (users: test, demo): ");
-        String username = sc.next();
-        System.out.print("Enter your password: ");
-        String givenPassword = sc.next();
+    //     System.out.print("Enter Username: (users: test, demo): ");
+    //     String username = sc.next();
+    //     System.out.print("Enter your password: ");
+    //     String givenPassword = sc.next();
 
-        String actualPassword = inter.getPassword(username); //the actual password in the db
+    //     String actualPassword = inter.getPassword(username); //the actual password in the db
 
-        if (actualPassword.equals("~")) //indicating username is not in db
-        {
-            System.exit(0);
-        }
+    //     if (actualPassword.equals("~")) //indicating username is not in db
+    //     {
+    //         System.exit(0);
+    //     }
 
-        if (givenPassword.equals(inter.getPassword(username))) //indicating the password matches
-        {
-            System.out.println("\nWelcome, " + username);
-        } else {
-            System.out.println("Password does not match.");
-            System.exit(0);
-        }
+    //     if (givenPassword.equals(inter.getPassword(username))) //indicating the password matches
+    //     {
+    //         System.out.println("\nWelcome, " + username);
+    //     } else {
+    //         System.out.println("Password does not match.");
+    //         System.exit(0);
+    //     }
 
-        System.out.print("Enter a new user? (y/n): ");
-        char cont = sc.next().charAt(0);
-        if ((cont == 'y') || (cont == 'Y')) {
-            System.out.print("Enter username of new user: ");
-            String newUser = sc.next();
-            System.out.print("Enter the password of the new user: ");
-            String newPass = sc.next();
-            System.out.print("Enter y if they are a manager: ");
-            cont = sc.next().charAt(0);
-            Boolean manager = false;
-            if ((cont == 'y') | (cont == 'Y')) {
-                manager = true;
-            }
+    //     System.out.print("Enter a new user? (y/n): ");
+    //     char cont = sc.next().charAt(0);
+    //     if ((cont == 'y') || (cont == 'Y')) {
+    //         System.out.print("Enter username of new user: ");
+    //         String newUser = sc.next();
+    //         System.out.print("Enter the password of the new user: ");
+    //         String newPass = sc.next();
+    //         System.out.print("Enter y if they are a manager: ");
+    //         cont = sc.next().charAt(0);
+    //         Boolean manager = false;
+    //         if ((cont == 'y') | (cont == 'Y')) {
+    //             manager = true;
+    //         }
 
-            inter.addUser(newUser, newPass, manager);
-        }
+    //         inter.addUser(newUser, newPass, manager);
+    //     }
 
-        //get the manager status of a user
-        System.out.print("Get the manager status of a user? (y/n): ");
-        cont = sc.next().charAt(0);
+    //     //get the manager status of a user
+    //     System.out.print("Get the manager status of a user? (y/n): ");
+    //     cont = sc.next().charAt(0);
 
-        if ((cont == 'y') || (cont == 'Y')) {
-            System.out.print("Enter user name: ");
-            name = sc.next();
-            System.out.println(inter.isManager(name));
-        }
+    //     if ((cont == 'y') || (cont == 'Y')) {
+    //         System.out.print("Enter user name: ");
+    //         name = sc.next();
+    //         System.out.println(inter.isManager(name));
+    //     }
 
-        //testing delete user
-        System.out.print("Delete a user? (y/n): ");
-        cont = sc.next().charAt(0);
-        if ((cont == 'Y') || (cont == 'y')) {
-            System.out.print("Enter user to delete: ");
-            name = sc.next();
-            inter.deleteUser(name);
-        }
+    //     //testing delete user
+    //     System.out.print("Delete a user? (y/n): ");
+    //     cont = sc.next().charAt(0);
+    //     if ((cont == 'Y') || (cont == 'y')) {
+    //         System.out.print("Enter user to delete: ");
+    //         name = sc.next();
+    //         inter.deleteUser(name);
+    //     }
 
-        //test basic accessing of fields
-        System.out.print("Enter the ID of the product you wish to learn about: ");
-        int id = sc.nextInt();
+    //     //test basic accessing of fields
+    //     System.out.print("Enter the ID of the product you wish to learn about: ");
+    //     int id = sc.nextInt();
 
-        Double price = inter.getPrice(id);
-        System.out.println("Price: " + price);
+    //     Double price = inter.getPrice(id);
+    //     System.out.println("Price: " + price);
 
-        name = inter.getProductName(id);
-        System.out.println("Name: " + name);
+    //     name = inter.getProductName(id);
+    //     System.out.println("Name: " + name);
 
-        int quantity = inter.getQuantity(id);
-        System.out.println("Quantity: " + quantity);
+    //     int quantity = inter.getQuantity(id);
+    //     System.out.println("Quantity: " + quantity);
 
-        Boolean rent = inter.isRentable(id);
-        System.out.println("Rentable: " + rent);
+    //     Boolean rent = inter.isRentable(id);
+    //     System.out.println("Rentable: " + rent);
 
-        //test adding an item
-        System.out.print("Add a product? (y/n): ");
-        cont = sc.next().charAt(0);
+    //     //test adding an item
+    //     System.out.print("Add a product? (y/n): ");
+    //     cont = sc.next().charAt(0);
 
-        if ((cont == 'y') || (cont == 'Y')) {
-            System.out.print("ID: ");
-            id = sc.nextInt();
+    //     if ((cont == 'y') || (cont == 'Y')) {
+    //         System.out.print("ID: ");
+    //         id = sc.nextInt();
 
-            System.out.print("Item name: ");
-            name = sc.next();
+    //         System.out.print("Item name: ");
+    //         name = sc.next();
 
-            System.out.print("Price: ");
-            price = Double.parseDouble(sc.next());
+    //         System.out.print("Price: ");
+    //         price = Double.parseDouble(sc.next());
 
-            System.out.print("Quantity: ");
-            quantity = sc.nextInt();
+    //         System.out.print("Quantity: ");
+    //         quantity = sc.nextInt();
 
-            System.out.print("Rentable? (Y/N): ");
-            rent = false;
-            char rentable = sc.next().charAt(0);
+    //         System.out.print("Rentable? (Y/N): ");
+    //         rent = false;
+    //         char rentable = sc.next().charAt(0);
 
-            if ((rentable == 'y') || (rentable == 'Y')) {
-                rent = true;
-            }
+    //         if ((rentable == 'y') || (rentable == 'Y')) {
+    //             rent = true;
+    //         }
 
-            inter.addProduct(id, name, price, quantity, rent);
+    //         inter.addProduct(id, name, price, quantity, rent);
 
-            System.out.println("Price of " + name + ": " + inter.getPrice(id));
+    //         System.out.println("Price of " + name + ": " + inter.getPrice(id));
 
-        }
+    //     }
 
-        System.out.print("Change the quantity of a product? (y/n): ");
-        cont = sc.next().charAt(0);
+    //     System.out.print("Change the quantity of a product? (y/n): ");
+    //     cont = sc.next().charAt(0);
 
-        if ((cont == 'y') || (cont == 'Y')) {
-            System.out.print("ID: ");
-            id = sc.nextInt();
+    //     if ((cont == 'y') || (cont == 'Y')) {
+    //         System.out.print("ID: ");
+    //         id = sc.nextInt();
 
-            System.out.print("Quantity change: ");
-            int q = sc.nextInt();
+    //         System.out.print("Quantity change: ");
+    //         int q = sc.nextInt();
 
-            System.out.println("Quantity before " + Integer.toString(inter.getQuantity(id)));
-            inter.updateQuantity(id, q);
-            System.out.println("Quantity after " + Integer.toString(inter.getQuantity(id)));
-        }
+    //         System.out.println("Quantity before " + Integer.toString(inter.getQuantity(id)));
+    //         inter.updateQuantity(id, q);
+    //         System.out.println("Quantity after " + Integer.toString(inter.getQuantity(id)));
+    //     }
 
-        //testing getItem() function (not just individual methods)
-        System.out.print("Get total item info for item(provide index): ");
-        id = sc.nextInt();
+    //     //testing getItem() function (not just individual methods)
+    //     System.out.print("Get total item info for item(provide index): ");
+    //     id = sc.nextInt();
 
-        Item newItem = inter.getItem(id);
+    //     Item newItem = inter.getItem(id);
 
-        System.out.println("Price: " + newItem.getPrice());
-        System.out.println("ID:" + newItem.getItemNumber());
-        System.out.println("Name: " + newItem.getName());
-        System.out.println("Rentable? " + newItem.getIsRental());
-        System.out.println("Quantity remaining: " + newItem.getQuantity());
+    //     System.out.println("Price: " + newItem.getPrice());
+    //     System.out.println("ID:" + newItem.getItemNumber());
+    //     System.out.println("Name: " + newItem.getName());
+    //     System.out.println("Rentable? " + newItem.getIsRental());
+    //     System.out.println("Quantity remaining: " + newItem.getQuantity());
 
-    }
+    // }
 
 }

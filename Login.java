@@ -3,14 +3,14 @@
  * used to login to register and begin performing actions
  *
  */
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 public class Login {
 
     private static Login inst;
     private String uName;
-    private final int attempts = 5;
+    private int attempts = 5;
     private boolean done = false;
     private final int cashierIn = -1;
     private final int mngIn = -0;
@@ -40,24 +40,31 @@ public class Login {
             this.uName = id.next();
             System.out.print("Please enter password\n-->");
             String givenPW = id.next();
-            if (givenPW.equals(SQLInterface.getInstance().getPassword(this.uName))) { //checks db for matching username and password
-                if (SQLInterface.getInstance().isManager(this.uName)) {
-                    System.out.println("Manager Login Success");
-                    this.done = true;
-                    ret = mngIn;
-                } else if (!(SQLInterface.getInstance().isManager(this.uName))) {
-                    System.out.println("Cashier Login Success");
-                    this.done = true;
-                    ret = cashierIn;
-                }
-            } else if (SQLInterface.getInstance().getPassword(this.uName).equals("~") || !(givenPW.contentEquals(SQLInterface.getInstance().getPassword(this.uName)))) {
-                //attempts--;
-                //if(attempts == 0){
-                //    System.out.println("Too many attempts, exiting");
-                //    System.exit(1);
-                //}
+            try
+            {
+                if (givenPW.equals(SQLInterface.getInstance().getPassword(this.uName))) { //checks db for matching username and password
+                    if (SQLInterface.getInstance().isManager(this.uName)) {
+                        System.out.println("Manager Login Success");
+                        this.done = true;
+                        ret = mngIn;
+                    } else if (!(SQLInterface.getInstance().isManager(this.uName))) {
+                        System.out.println("Cashier Login Success");
+                        this.done = true;
+                        ret = cashierIn;
+                    }
+                } else if (SQLInterface.getInstance().getPassword(this.uName).equals("~") || !(givenPW.contentEquals(SQLInterface.getInstance().getPassword(this.uName)))) {
+                    attempts--;
+                    if(attempts == 0){
+                       System.out.println("Too many attempts, exiting");
+                       System.exit(1);
+                    }
 
-                System.out.println("Invalid User Name/Password, Remaining Attempts: " + attempts);
+                    System.out.println("Invalid User Name/Password, Remaining Attempts: " + attempts);
+                }
+            }
+            catch(FileNotFoundException e)
+            {
+                System.out.println("Invalid User Name/Password");
             }
         } while (!done);
         return ret;

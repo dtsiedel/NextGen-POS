@@ -3,8 +3,10 @@
 import java.util.*;
 import java.io.*;
 
-@SuppressWarnings("unchecked") //compiler complains that our "inventory" arraylist could contain anything, when we claim it is full of only Items
+@SuppressWarnings({"unchecked", "deprecation"}) //compiler complains that our "inventory" arraylist could contain anything, when we claim it is full of only Items
 //however, I feel it is safe to suppress this, as long as we are careful to only ever store items in the inventory
+
+
 
 public class ReceiptManager {
 
@@ -155,9 +157,23 @@ public class ReceiptManager {
         this.makeSQLCall(command); //update counter in db
     }
 
+    //gets the data associated with the receipt at the given id
+    public Date getDate(int receiptID) throws InterruptedException, IOException 
+    {
+        String[] command = {sqlite, db, ("SELECT date FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
+        String dateString = this.getSQLOutput();
+
+        Date date = new Date(Date.parse(dateString));
+
+        System.out.println(date);
+
+        return date;
+    }
+
     //gets a receipt in the database based on ID
     public Receipt getReceipt(int receiptID) throws InterruptedException, IOException {
-		//id(int)         name(string)        price(real)      quantity(int)      rental(0-1int, aka makeshift bool)
+		Receipt r;
+        //id(int)         name(string)        price(real)      quantity(int)      rental(0-1int, aka makeshift bool)
 
         //get the two ints from receipt db at given id
         //make a new Cart
@@ -165,69 +181,77 @@ public class ReceiptManager {
         //grab relevant info from index, and make an item of it
         //add each item to the cart
         //from the cart and the ID (which we already have), construct a receipt, and return it
-        Cart cart = new Cart();
+        
+        if(receiptID < ReceiptManager.receiptCount)
+        {
+            Cart cart = new Cart();
 
-        String[] commands1 = {sqlite, db, ("SELECT start FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
-        this.makeSQLCall(commands1);
-        String result = this.getSQLOutput();
-        int start = Integer.parseInt(result);
+            String[] commands1 = {sqlite, db, ("SELECT start FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
+            this.makeSQLCall(commands1);
+            String result = this.getSQLOutput();
+            int start = Integer.parseInt(result);
 
-        String[] commands2 = {sqlite, db, ("SELECT run FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
-        this.makeSQLCall(commands2);
-        result = this.getSQLOutput();
-        int run = Integer.parseInt(result);
+            String[] commands2 = {sqlite, db, ("SELECT run FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
+            this.makeSQLCall(commands2);
+            result = this.getSQLOutput();
+            int run = Integer.parseInt(result);
 
-        int end = start + run; //one more than the last item belonging to this receipt
+            int end = start + run; //one more than the last item belonging to this receipt
 
-        for (int i = start; i < end; i++) {
-            String[] nameCommands = {sqlite, db, ("SELECT name from " + itemsDB + " WHERE id=" + i + ";")};
-            this.makeSQLCall(nameCommands);
-            String name = this.getSQLOutput();
+            for (int i = start; i < end; i++) {
+                String[] nameCommands = {sqlite, db, ("SELECT name from " + itemsDB + " WHERE id=" + i + ";")};
+                this.makeSQLCall(nameCommands);
+                String name = this.getSQLOutput();
 
-            String[] rentCommands = {sqlite, db, ("SELECT rental from " + itemsDB + " WHERE id=" + i + ";")};
-            this.makeSQLCall(rentCommands);
-            String rentalString = this.getSQLOutput();
-            Boolean rentable = (Integer.parseInt(rentalString) == 1) ? true : false; //get rentable bool from int
+                String[] rentCommands = {sqlite, db, ("SELECT rental from " + itemsDB + " WHERE id=" + i + ";")};
+                this.makeSQLCall(rentCommands);
+                String rentalString = this.getSQLOutput();
+                Boolean rentable = (Integer.parseInt(rentalString) == 1) ? true : false; //get rentable bool from int
 
-            String[] priceCommands = {sqlite, db, ("SELECT price from " + itemsDB + " WHERE id=" + i + ";")};
-            this.makeSQLCall(priceCommands);
-            String priceString = this.getSQLOutput();
-            Double price = Double.parseDouble(priceString); //get price double from price string
+                String[] priceCommands = {sqlite, db, ("SELECT price from " + itemsDB + " WHERE id=" + i + ";")};
+                this.makeSQLCall(priceCommands);
+                String priceString = this.getSQLOutput();
+                Double price = Double.parseDouble(priceString); //get price double from price string
 
-            String[] idCommands = {sqlite, db, ("SELECT id from products WHERE name=\"" + name + "\";")};
-            this.makeSQLCall(idCommands);
-            String idString = this.getSQLOutput();
-            int id;
-            try {
-                id = Integer.parseInt(idString);
-            } catch (NumberFormatException e) {
-                System.out.println("Could not find item " + name + " in products database.");
-                id = 9999999;
+                String[] idCommands = {sqlite, db, ("SELECT id from products WHERE name=\"" + name + "\";")};
+                this.makeSQLCall(idCommands);
+                String idString = this.getSQLOutput();
+                int id;
+                try {
+                    id = Integer.parseInt(idString);
+                } catch (NumberFormatException e) {
+                    System.out.println("Could not find item " + name + " in products database.");
+                    id = 9999999;
+                }
+
+                String[] quantityCommands = {sqlite, db, ("SELECT quantity FROM " + itemsDB + " WHERE id=" + i + ";")};
+                this.makeSQLCall(quantityCommands);
+                String quantString = this.getSQLOutput();
+                int quantity;
+                try {
+                    quantity = Integer.parseInt(quantString);
+                } catch (NumberFormatException e) {
+                    System.out.println("Could not find item " + name + " in products database.");
+                    quantity = 9999999;
+                }
+
+                Item item = new Item(rentable, price, id, name, quantity);
+
+                // System.out.println("\n\n\nGot name: " + item.getName());
+                // System.out.println("Got rentable: " + item.getIsRental());
+                // System.out.println("Got price: " + item.getPrice());
+                // System.out.println("Got id: " + item.getItemNumber());
+                // System.out.println("Got quantity: " + item.getQuantity());
+                cart.add(item);
+
             }
 
-            String[] quantityCommands = {sqlite, db, ("SELECT quantity FROM " + itemsDB + " WHERE id=" + i + ";")};
-            this.makeSQLCall(quantityCommands);
-            String quantString = this.getSQLOutput();
-            int quantity;
-            try {
-                quantity = Integer.parseInt(quantString);
-            } catch (NumberFormatException e) {
-                System.out.println("Could not find item " + name + " in products database.");
-                quantity = 9999999;
-            }
-
-            Item item = new Item(rentable, price, id, name, quantity);
-
-            // System.out.println("\n\n\nGot name: " + item.getName());
-            // System.out.println("Got rentable: " + item.getIsRental());
-            // System.out.println("Got price: " + item.getPrice());
-            // System.out.println("Got id: " + item.getItemNumber());
-            // System.out.println("Got quantity: " + item.getQuantity());
-            cart.add(item);
-
+            r = new Receipt(cart, .06, 0, receiptID);
         }
-
-        Receipt r = new Receipt(cart, .06, 0, receiptID);
+        else
+        {
+            return null;
+        }
 
         return r;
     }
@@ -235,7 +259,8 @@ public class ReceiptManager {
     //deletes all receipts from database, and all items from receiptitems
     //also sets the start and run values in 0 from the receipts db
     //it goes without saying to be careful using this, and not to use in production
-    private void purgeDatabases() throws InterruptedException, IOException {
+    private void purgeDatabases() throws InterruptedException, IOException 
+    {
         String[] deleteReceipts = {sqlite, db, ("DELETE FROM " + receiptDB + " WHERE id!=0;")};
         this.makeSQLCall(deleteReceipts);
 
@@ -253,29 +278,29 @@ public class ReceiptManager {
         ReceiptManager.receiptItemCount = 1;
     }
 
-    //test stub
-    public static void main(String[] args) throws InterruptedException, IOException {
-        ReceiptManager manager = ReceiptManager.getInstance();
+    // //test stub
+    // public static void main(String[] args) throws InterruptedException, IOException {
+    //     ReceiptManager manager = ReceiptManager.getInstance();
 
-        manager.purgeDatabases(); //primarily for testing use
+    //     manager.purgeDatabases(); //primarily for testing use
 
-        System.out.println("ReceiptCount: " + ReceiptManager.receiptCount);
-        System.out.println("receiptItemCount: " + ReceiptManager.receiptItemCount);
+    //     System.out.println("ReceiptCount: " + ReceiptManager.receiptCount);
+    //     System.out.println("receiptItemCount: " + ReceiptManager.receiptItemCount);
 
-        Cart c = new Cart();
-        c.add(new Item(false, 1.00, 0, "lettuce", 10));
-        c.add(new Item(false, 1.00, 1, "burgers", 10));
-        c.add(new Item(true, 1.00, 2, "cheese", 10));
+    //     Cart c = new Cart();
+    //     c.add(new Item(false, 1.00, 0, "lettuce", 10));
+    //     c.add(new Item(false, 1.00, 1, "burgers", 10));
+    //     c.add(new Item(true, 1.00, 2, "cheese", 10));
 
-        Receipt r = new Receipt(c, 0.0, 0);
-        r.store();
+    //     Receipt r = new Receipt(c, 0.0, 0);
+    //     r.store();
 
-        System.out.println("New receiptCount: " + ReceiptManager.receiptCount);
-        System.out.println("New receiptItemCount: " + ReceiptManager.receiptItemCount);
+    //     System.out.println("New receiptCount: " + ReceiptManager.receiptCount);
+    //     System.out.println("New receiptItemCount: " + ReceiptManager.receiptItemCount);
 
-        Receipt receipt = manager.getReceipt(1);
+    //     Receipt receipt = manager.getReceipt(1);
 
-        receipt.print();
+    //     receipt.print();
 
-    }
+    // }
 }
