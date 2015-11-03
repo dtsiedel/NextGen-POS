@@ -1,0 +1,11 @@
+For Manager functionality testing
+Login Info
+user name: sicong
+pw: password
+
+For Cashier functionality testing
+Login Info
+user name: sicongCashier
+pw: money
+
+To view any specific database, open sqlite3 shell and input SQL commands
