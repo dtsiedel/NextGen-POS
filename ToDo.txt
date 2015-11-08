@@ -1,27 +1,26 @@
 To Do:
--fully integrate with DB
--fully integrate with GUI
+-fully integrate with DB - DONE
+-fully integrate with GUI - Beta
 -Rental
-	- rent the rental - 
-	- return the rental - 
-	- Update DB accordingly - 
+	- rent the rental - Done
+	- return the rental - Done
+	- Update DB accordingly - Done
 -Return
-	- Update the DB - 
-	- Refund customer - 
+	- Update the DB - Done
+	- Refund customer - Done
 -Transaction
 	- buy an item - DONE
 	- end the sale, print receipt - DONE
-	- buy multiple items - 
-	- Update DB - 
+	- buy multiple items - Done
+	- Update DB - Done 
 -Startup/Shutdown
-	- startup - execute program - DONE?
+	- startup - execute program - DONE
 	- shutdown - wait for manager execution of shutdown - DONE
-	- Login - Should be working
+	- Login - Done
 -User Management
 	- add users to DB - Done
-	- delete users from DB - 
--NumberFormatExceptions - Done?
--Tax Calculator
-	-Integrate with trans. and rental
+	- delete users from DB - Done 
+-NumberFormatExceptions - Beta
+-Tax Calculator- flat rate of 6%
 -Remote services unavailable, still run
-	- capable of handling cash and sale
+	- DB is locally hosted, therefore remote services being unavailable is not possible

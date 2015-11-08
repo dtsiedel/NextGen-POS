@@ -59,7 +59,8 @@ public class Cart extends Register {
      * removeItem removes one copy of the item with the specified index from the cart and updates the database
      *
      * @param itemNumber
-     * @throws some shit
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
     public void removeItem(int itemNumber) throws InterruptedException, IOException {
         //itemNumber = getItemNum.nextInt();

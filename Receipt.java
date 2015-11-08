@@ -51,7 +51,6 @@ public class Receipt {
      * checks the date on a receipt for a rental to ensure it is within time to
      * return otherwise charge fee of $5.00?
      *
-     * @param r
      * @return goodCheck (true/false)
      */
     public boolean checkRentalDate() {
@@ -78,6 +77,7 @@ public class Receipt {
         //System.out.println("Item (Quantity)" + "\t\t" + "Price\n"); //fix later
         Date receiptDate = new Date(); //now
         System.out.println("Date: " + receiptDate);
+
         for (Item item : cart.inventory) { //for each item in cart
             //System.out.println(item.getName() + "\t(" + item.getQuantity() + ")" + "\t\t$" + df.format(item.getPrice())); //fix later
             if(item.getIsRental())
