@@ -2,6 +2,7 @@
 import java.text.DecimalFormat;
 import java.io.*;
 import java.util.*;
+
 @SuppressWarnings("deprecation")
 /**
  * Receipt class, prints subTotal, tax, and total
@@ -14,6 +15,7 @@ public class Receipt {
     private int id = -999;             //tracks the receipt's ID. ID is assigned when receipt is added to db
     //private final double lateFee = 200.00; // late fee beta?
     private Date date = new Date();
+
     /**
      * Receipt constructor if you know the id you want
      *
@@ -47,10 +49,15 @@ public class Receipt {
     public void setId(int id) {
         this.id = id;
     }
+
     /**
      * checks the date on a receipt for a rental to ensure it is within time to
      * return otherwise charge fee of $5.00?
      *
+     * <<<<<<< HEAD ======= @param
+     *
+     * r
+     * >>>>>>> refs/remotes/origin/master
      * @return goodCheck (true/false)
      */
     public boolean checkRentalDate() {
@@ -65,6 +72,7 @@ public class Receipt {
         }
         return goodCheck;
     }
+
     /**
      * print(), prints subtotal, tax and total
      *
@@ -77,11 +85,11 @@ public class Receipt {
         //System.out.println("Item (Quantity)" + "\t\t" + "Price\n"); //fix later
         Date receiptDate = new Date(); //now
         System.out.println("Date: " + receiptDate);
-
         for (Item item : cart.inventory) { //for each item in cart
             //System.out.println(item.getName() + "\t(" + item.getQuantity() + ")" + "\t\t$" + df.format(item.getPrice())); //fix later
-            if(item.getIsRental())
+            if (item.getIsRental()) {
                 System.out.print("(R)");
+            }
             System.out.println(item.getName() + "\t\t$" + df.format(item.getPrice()));
         }
         System.out.println("\n\tOrder Subtotal:\t$" + df.format(cart.getSubtotal()));

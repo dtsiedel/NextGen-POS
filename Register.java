@@ -37,7 +37,6 @@ public class Register {
             totalTax += item.getPrice() * .06; //temp until TaxCalculator is implemented
             //totalTax += item.getPrice() * taxCalc.getTax();
         }
-
         return totalTax;
     }
 
