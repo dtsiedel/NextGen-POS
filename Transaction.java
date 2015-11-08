@@ -101,9 +101,17 @@ public class Transaction extends Register {
         int pt = getPaymentType();
 
         if (registerPay(pt)) {
+            Scanner cashIn = new Scanner(System.in);
+            System.out.print("Enter cash recieved\n-->"); //should put this in a loop, make another method?
+            double c = 0.0;
+            if (cashIn.hasNextInt()) {
+                c = cashIn.nextInt();
+            }
+            double change = makeChange(c, currentCart.getSubtotal());
             Receipt receipt = new Receipt(currentCart, tax, pt);
             receipt.store();
             receipt.print();
+            System.out.printf("Your change is %d.", change);
         }
     }
 
@@ -135,5 +143,22 @@ public class Transaction extends Register {
             }
             //System.exit(0);
         }
+    }
+
+    /**
+     * make change from transaction
+     *
+     * @param cash
+     * @param total
+     * @return
+     */
+    public double makeChange(double cash, double total) {
+        double ret = 0.0;
+        if (total >= cash) {
+            ret = total - cash;
+        } else if (total < cash) {
+            System.out.println("Insufficient Funds");
+        }
+        return ret;
     }
 }

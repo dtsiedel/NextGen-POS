@@ -11,6 +11,7 @@ public class Cart extends Register {
 
     //protected ArrayList<Item> items;
     private double subTotal;
+    private double cashIn;
 
     /**
      * Cart default constructor

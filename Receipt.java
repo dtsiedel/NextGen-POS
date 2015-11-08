@@ -54,10 +54,6 @@ public class Receipt {
      * checks the date on a receipt for a rental to ensure it is within time to
      * return otherwise charge fee of $5.00?
      *
-     * <<<<<<< HEAD ======= @param
-     *
-     * r
-     * >>>>>>> refs/remotes/origin/master
      * @return goodCheck (true/false)
      */
     public boolean checkRentalDate() {
