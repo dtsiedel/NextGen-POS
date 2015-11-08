@@ -1,9 +1,11 @@
-
 /**
  * A rental has a price, due date, associated receipt
  *
  */
 import java.util.Date;
+import java.io.*;
+
+@SuppressWarnings("deprecation")
 
 public class Rental {
 
@@ -48,20 +50,14 @@ public class Rental {
         return this.receipt;
     }
 
+    
     /**
-     * checks the date on a receipt for a rental to ensure it is within time to
-     * return otherwise charge fee of $5.00?
-     *
-     * @param r
-     * @return goodCheck (true/false)
-     */
-    public boolean checkRentalDate(Rental r) {
-        boolean goodCheck = false;
-        if (r.getDate().after(r.getDate())) {
-            goodCheck = false;
-        } else if (r.getDate().before(r.getDate())) {
-            goodCheck = true;
-        }
-        return goodCheck;
+    *makes a rental
+    *
+    */
+    public void makeRental() throws InterruptedException, IOException
+    {
+        Return ret = new Return();
+        ret.makeReturn();
     }
 }

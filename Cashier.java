@@ -38,21 +38,22 @@ public class Cashier {
         Scanner cashierScan = new Scanner(System.in);
         boolean done = false;
         do {
-            System.out.print("Please select an option\n-->");
-            System.out.print("[OPTIONS- 0:Process Transaction, 1: Process Return, -1:Logout]");
+
+            System.out.print("Please select an option");
+            System.out.print("[OPTIONS- 0:Process Transaction, 1: Process Return, 2: Return Rental, -1:Logout]\n-->");
             try {
                 switch (cashierScan.nextInt()) {
                     case 0:
                         Transaction trans = new Transaction();
                         trans.makeTransaction();
                         break;
-                    //case 1:
-                    //Rental rent = new Rental();
-                    //rental.makeRental();
-                    //  break;
                     case 1:
                         Return ret = new Return();
                         ret.makeReturn();
+                        break;
+                    case 2:
+                        Rental rental = new Rental();
+                        rental.makeRental();
                         break;
                     case -1:
                         //logout

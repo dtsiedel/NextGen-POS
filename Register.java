@@ -29,11 +29,7 @@ public class Register {
      */
     public double getTax(Cart cart) {
         double totalTax = 0.0;
-        for (Item item : cart.items) {
-            //totalTax += item.getPrice()*stateTax(currentState, item.getType());
-            totalTax += item.getPrice() * .06; //temp until TaxCalculator is implemented
-            //totalTax += item.getPrice() * taxCalc.getTax();
-        }
+        totalTax = cart.getSubtotal() * .06; //tax percentage in PA
         return totalTax;
     }
 
@@ -44,7 +40,7 @@ public class Register {
      */
     public int getPaymentType() {
         System.out.print("Enter payment method-");
-        System.out.print("[OPTIONS: 0 for Cash\n-->"); //credit  not implemented yet
+        System.out.print("[OPTIONS: 0 for Cash]\n-->"); //credit  not implemented yet
         this.paymentType = readPaymentType.nextInt();
         return this.paymentType;
     }

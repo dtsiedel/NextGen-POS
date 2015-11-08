@@ -52,8 +52,13 @@ public class Item {
      * setQuantity assigns number of items
      *
      */
-    public void setQuantity() {
-        this.quantity += 1;
+    public void setQuantity(int q) {
+        this.quantity = q;
+    }
+
+    public void setPrice(Double price)
+    {
+        this.price = price;
     }
 
     /*
@@ -70,5 +75,10 @@ public class Item {
      */
     public int getQuantity() {
         return this.quantity;
+    }
+
+    public boolean equals(Item other)
+    {
+        return (this.getItemNumber() == other.getItemNumber());
     }
 }
