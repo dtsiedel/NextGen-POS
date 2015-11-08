@@ -154,9 +154,9 @@ public class Transaction extends Register {
      */
     public double makeChange(double cash, double total) {
         double ret = 0.0;
-        if (total >= cash) {
-            ret = total - cash;
-        } else if (total < cash) {
+        if (cash >= total) {
+            ret = cash - total;
+        } else if (cash < total) {
             System.out.println("Insufficient Funds");
         }
         return ret;
