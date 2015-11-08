@@ -41,8 +41,6 @@ public class Cashier {
 
             System.out.print("Please select an option");
             System.out.print("[OPTIONS- 0:Process Transaction, 1: Process Return, 2: Return Rental, -1:Logout]\n-->");
-            System.out.print("Please select an option");
-            System.out.print("[OPTIONS- 0:Process Transaction, 1: Process Return, -1:Logout]\n-->");
             try {
                 switch (cashierScan.nextInt()) {
                     case 0:

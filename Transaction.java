@@ -17,7 +17,7 @@ public class Transaction extends Register {
     private final int cancelTransaction;
     private static final Double taxPercent = .06;
     private ArrayList<int[]> changes; //list of changes made in the program, used to undo changes
-                                       //format of each sublist (index, ∆change)
+    //format of each sublist (index, ∆change)
     Cart currentCart = new Cart();
 
     /**
@@ -31,6 +31,7 @@ public class Transaction extends Register {
         this.removeItem = -1;
         this.cancelTransaction = -190;
         this.input = 0;  /*stores itemNum of currentCart.items.get(index).getItemNumber*/
+
     }
 
     /**
@@ -108,9 +109,12 @@ public class Transaction extends Register {
     /**
      * cancelSale(), set all elements of cart items to null and set size to 0,
      * assumes cancel sale means end program for now0
+     *
+     * @param changes
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
-    public void cancelTransaction(ArrayList<int[]> changes) throws InterruptedException, IOException 
-    {
+    public void cancelTransaction(ArrayList<int[]> changes) throws InterruptedException, IOException {
         /*this should set all elements of ArrayList items to null and set size to 0*/
         System.out.println("Transaction was cancelled...CART IS NOW EMPTY!");
         currentCart.inventory.clear();
@@ -119,14 +123,12 @@ public class Transaction extends Register {
         int id;
         int quantity;
 
-        for(int[] pair : changes)
-        {
+        for (int[] pair : changes) {
             id = pair[0];
             quantity = pair[1];
 
             SQLInterface.getInstance().updateQuantity(id, quantity);
         }
-
 
         //System.exit(0);
     }
