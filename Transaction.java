@@ -17,7 +17,7 @@ public class Transaction extends Register {
     private final int cancelTransaction;
     private static final Double taxPercent = .06;
     private ArrayList<int[]> changes; //list of changes made in the program, used to undo changes
-                                       //format of each sublist (index, ∆change)
+                                       //format of each sublist (index, delta change)
     Cart currentCart = new Cart();
 
     /**
