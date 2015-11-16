@@ -17,10 +17,34 @@ public class Transaction extends Register {
     private final int cancelTransaction;
     private static final Double taxPercent = .06;
     private ArrayList<int[]> changes; //list of changes made in the program, used to undo changes
-    //format of each sublist (index, ∆change)
-
     Cart currentCart = new Cart();
-
+    /**
+     * creditCard check method to validate a credit card
+     * @param num
+     * @return boolean true/false if cc is valid or not
+    */
+    public static boolean creditCardCheck(String num){
+        int sum1 = 0;
+        int sum2 = 0;
+        String tVal = new StringBuffer(num).reverse().toString();
+        for(int i = 0; i < tVal.length(); i++){
+            int digit = Character.digit(tVal.charAt(i), 10);
+        if(i % 2 == 0){ //check odd digits, index 0, 2, 4 etc.
+            sum1 += digit;
+        }else{ //check even digits 1, 3, 5 etc.
+            int temp = digit *2;
+            if(temp >9){
+                int d1 = temp/10;
+                int d2 = temp%10;
+                sum2 += d1 + d2;
+            }
+        else{
+          sum2 += temp;
+        }
+      }
+    }
+    return ((sum1+sum2)%10 == 0);
+  }
     /**
      * Sale constructor, takes user input to fill cart with items until user
      * enters -999 to indicate no more items, user enters -1 to remove item
