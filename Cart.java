@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.io.*;
 
 /**
  * Cart class extends Register holds ArrayList of items
@@ -42,6 +43,7 @@ public class Cart extends Register {
         for (int i = 0; i < q; i++) {
             inventory.add(item);
         }
+        subTotal+=(item.getPrice() * q);
     }
 
     //get method for inventory arraylist
@@ -54,25 +56,27 @@ public class Cart extends Register {
     }
 
     /**
-     * removeItem finds last possible item in list and removes it and adjusts
-     * subTotal as well else prints error notice
+     * removeItem removes one copy of the item with the specified index from the cart and updates the database
      *
      * @param itemNumber
+     * @throws some shit
      */
-    public void removeItem(int itemNumber) {
+    public void removeItem(int itemNumber) throws InterruptedException, IOException {
         //itemNumber = getItemNum.nextInt();
         //int index - items.lastIndexOf(Inventory.findItem(itemNumber));
-        int index = -1;
-        if (itemNumber <= (inventory.size() - 1)) {
-            index = inventory.lastIndexOf(inventory.get(itemNumber));
-            if (index != -1) {
-                System.out.println(inventory.get(index).getName() + " was removed from cart!");
-                subTotal -= inventory.get(index).getPrice();
-                inventory.remove(index);
+        //int index = -1;
+        for(int i = 0; i < inventory.size(); i++){
+            if (itemNumber == inventory.get(i).getItemNumber()) {
+
+                System.out.println(inventory.get(i).getName() + " was removed from cart!");
+                subTotal -= inventory.get(i).getPrice();
+                inventory.remove(i);
+                break;
+            } else {
+                System.out.println("No such item exists in this Cart.");
             }
-        } else {
-            System.out.println("No such item exists in this Cart.");
         }
+
     }
 
     /**

@@ -1,6 +1,6 @@
 
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Sale class extends Register, performs Sale transaction
@@ -15,6 +15,9 @@ public class Transaction extends Register {
     private int input;
     private boolean isRental;
     private final int cancelTransaction;
+    private static final Double taxPercent = .06;
+    private ArrayList<int[]> changes; //list of changes made in the program, used to undo changes
+                                       //format of each sublist (index, ∆change)
     Cart currentCart = new Cart();
 
     /**
@@ -28,7 +31,6 @@ public class Transaction extends Register {
         this.removeItem = -1;
         this.cancelTransaction = -190;
         this.input = 0;  /*stores itemNum of currentCart.items.get(index).getItemNumber*/
-
     }
 
     /**
@@ -39,6 +41,7 @@ public class Transaction extends Register {
      * @throws java.io.IOException
      */
     public void makeTransaction() throws InterruptedException, IOException {
+        changes = new ArrayList<int[]>();
         Scanner transaction = new Scanner(System.in);
         while (nextItem) {
             try {
@@ -56,7 +59,9 @@ public class Transaction extends Register {
                         System.out.print("Enter an item to remove\n-->");
                         currentCart.removeItem(transaction.nextInt()); //read in another value to remove that item
                     } else if (input == cancelTransaction) { //input is -190
-                        cancelTransaction();
+                        cancelTransaction(changes);
+                        Cashier.cashierDo();
+                        break;
                     } else { //input is none of the options, thus possibly a valid itemNumber to add an item to cart
                         //based on input, return Item from database called item
                         System.out.println("Enter quantity of item to be purchased"); //prompt user to enter quantity of items to buy
@@ -64,22 +69,22 @@ public class Transaction extends Register {
                         if (itemQuan > SQLInterface.getInstance().getQuantity(input)) { //check inventory
                             System.out.println("Error, not enough inventory for purchase");
                             System.out.println("Please re-enter item id and quantity");
-                            break;
+                            continue;
                         }
                         if (itemQuan > 1 && itemQuan <= SQLInterface.getInstance().getQuantity(input)) {
                             Item item = SQLInterface.getInstance().getItem(input);
-                            if (item.getIsRental()) {
-                                isRental = true;
-                            }
+
                             currentCart.addMultItems(item, itemQuan);
                             SQLInterface.getInstance().updateQuantity(input, (itemQuan * -1));
+                            int[] changeVals = {input, itemQuan};
+                            changes.add(changeVals);
                         } else {
                             Item item = SQLInterface.getInstance().getItem(input);
-                            if (item.getIsRental()) {
-                                isRental = true;
-                            }
+
                             currentCart.add(item);
                             SQLInterface.getInstance().updateQuantity(input, -1);
+                            int[] changeVals = {input, itemQuan};
+                            changes.add(changeVals);
                         }
                     }
                 } else {
@@ -91,18 +96,12 @@ public class Transaction extends Register {
         }
         tax = getTax(currentCart);
 
-        if (isRental) {
-            //what info are we entering?
-            System.out.println("Please enter your info for the following item rentals");
-            currentCart.printRentals();
-        }
         int pt = getPaymentType();
-        total = currentCart.getSubtotal() + tax;
 
         if (registerPay(pt)) {
             Receipt receipt = new Receipt(currentCart, tax, pt);
-            receipt.print();
             receipt.store();
+            receipt.print();
         }
     }
 
@@ -110,11 +109,25 @@ public class Transaction extends Register {
      * cancelSale(), set all elements of cart items to null and set size to 0,
      * assumes cancel sale means end program for now0
      */
-    public void cancelTransaction() {
+    public void cancelTransaction(ArrayList<int[]> changes) throws InterruptedException, IOException 
+    {
         /*this should set all elements of ArrayList items to null and set size to 0*/
         System.out.println("Transaction was cancelled...CART IS NOW EMPTY!");
         currentCart.inventory.clear();
         currentCart.clearSubTotal();
+
+        int id;
+        int quantity;
+
+        for(int[] pair : changes)
+        {
+            id = pair[0];
+            quantity = pair[1];
+
+            SQLInterface.getInstance().updateQuantity(id, quantity);
+        }
+
+
         //System.exit(0);
     }
 
