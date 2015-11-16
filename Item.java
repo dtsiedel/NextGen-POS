@@ -51,6 +51,7 @@ public class Item {
     /**
      * setQuantity assigns number of items
      *
+     * @param q
      */
     public void setQuantity(int q) {
         this.quantity = q;

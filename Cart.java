@@ -11,6 +11,7 @@ public class Cart extends Register {
 
     //protected ArrayList<Item> items;
     private double subTotal;
+    private double cashIn;
 
     /**
      * Cart default constructor
@@ -43,7 +44,7 @@ public class Cart extends Register {
         for (int i = 0; i < q; i++) {
             inventory.add(item);
         }
-        subTotal+=(item.getPrice() * q);
+        subTotal += (item.getPrice() * q);
     }
 
     //get method for inventory arraylist
@@ -56,16 +57,19 @@ public class Cart extends Register {
     }
 
     /**
-     * removeItem removes one copy of the item with the specified index from the cart and updates the database
+     * removeItem removes one copy of the item with the specified index from the
+     * cart and updates the database
      *
      * @param itemNumber
-     * @throws some shit
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
+     *
      */
     public void removeItem(int itemNumber) throws InterruptedException, IOException {
         //itemNumber = getItemNum.nextInt();
         //int index - items.lastIndexOf(Inventory.findItem(itemNumber));
         //int index = -1;
-        for(int i = 0; i < inventory.size(); i++){
+        for (int i = 0; i < inventory.size(); i++) {
             if (itemNumber == inventory.get(i).getItemNumber()) {
 
                 System.out.println(inventory.get(i).getName() + " was removed from cart!");
