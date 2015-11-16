@@ -17,10 +17,10 @@ public class Transaction extends Register {
     private final int cancelTransaction;
     private static final Double taxPercent = .06;
     private ArrayList<int[]> changes; //list of changes made in the program, used to undo changes
-                                       //format of each sublist (index, delta change)
     Cart currentCart = new Cart();
     /**
      * creditCard check method to validate a credit card
+     * @param num
      * @return boolean true/false if cc is valid or not
     */
     public static boolean creditCardCheck(String num){
@@ -56,6 +56,7 @@ public class Transaction extends Register {
         this.removeItem = -1;
         this.cancelTransaction = -190;
         this.input = 0;  /*stores itemNum of currentCart.items.get(index).getItemNumber*/
+
     }
 
     /**
@@ -124,36 +125,64 @@ public class Transaction extends Register {
         int pt = getPaymentType();
 
         if (registerPay(pt)) {
+            Scanner cashIn = new Scanner(System.in);
+            System.out.print("Enter cash recieved\n-->"); //should put this in a loop, make another method?
+            double c = 0.0;
+            if (cashIn.hasNextInt()) {
+                c = cashIn.nextInt();
+            }
+            double change = makeChange(c, currentCart.getSubtotal());
             Receipt receipt = new Receipt(currentCart, tax, pt);
             receipt.store();
             receipt.print();
+            System.out.printf("Your change is %d.", change);
         }
     }
 
     /**
      * cancelSale(), set all elements of cart items to null and set size to 0,
      * assumes cancel sale means end program for now0
+     *
+     * @param changes
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
      */
-    public void cancelTransaction(ArrayList<int[]> changes) throws InterruptedException, IOException 
-    {
-        /*this should set all elements of ArrayList items to null and set size to 0*/
-        System.out.println("Transaction was cancelled...CART IS NOW EMPTY!");
-        currentCart.inventory.clear();
-        currentCart.clearSubTotal();
-
-        int id;
-        int quantity;
-
-        for(int[] pair : changes)
+    public void cancelTransaction(ArrayList<int[]> changes) throws InterruptedException, IOException {
         {
-            id = pair[0];
-            quantity = pair[1];
 
-            SQLInterface.getInstance().updateQuantity(id, quantity);
+            /*this should set all elements of ArrayList items to null and set size to 0*/
+            System.out.println("Transaction was cancelled...CART IS NOW EMPTY!");
+            currentCart.inventory.clear();
+            currentCart.clearSubTotal();
+
+            int id;
+            int quantity;
+
+            for (int[] pair : changes) {
+
+                id = pair[0];
+                quantity = pair[1];
+
+                SQLInterface.getInstance().updateQuantity(id, quantity);
+            }
+            //System.exit(0);
         }
-
-
-        //System.exit(0);
     }
 
+    /**
+     * make change from transaction
+     *
+     * @param cash
+     * @param total
+     * @return
+     */
+    public double makeChange(double cash, double total) {
+        double ret = 0.0;
+        if (cash >= total) {
+            ret = cash - total;
+        } else if (cash < total) {
+            System.out.println("Insufficient Funds");
+        }
+        return ret;
+    }
 }

@@ -41,7 +41,7 @@ public class Manager {
         boolean done = false;
         do {
             System.out.print("Please select an option\n-->");
-            System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, -1:Logout, -2:Shutdown]");
+            System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, 3:Process Transaction, 4:Process Return, 5:Return Rental\n-1:Logout, -2:Shutdown]");
             try {
                 switch (managerScan.nextInt()) {
                     case 0:
@@ -70,6 +70,18 @@ public class Manager {
                         break;
                     case 2:
                         //sale stats not implemented yet, beta?
+                        break;
+                    case 3:
+                        Transaction trans = new Transaction();
+                        trans.makeTransaction();
+                        break;
+                    case 4:
+                        Return ret = new Return();
+                        ret.makeReturn();
+                        break;
+                    case 5:
+                        Rental rental = new Rental();
+                        rental.makeRental();
                         break;
                     case -1:
                         //logout
