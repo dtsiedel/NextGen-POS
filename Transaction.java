@@ -18,33 +18,7 @@ public class Transaction extends Register {
     private static final Double taxPercent = .06;
     private ArrayList<int[]> changes; //list of changes made in the program, used to undo changes
     Cart currentCart = new Cart();
-    /**
-     * creditCard check method to validate a credit card
-     * @param num
-     * @return boolean true/false if cc is valid or not
-    */
-    public static boolean creditCardCheck(String num){
-        int sum1 = 0;
-        int sum2 = 0;
-        String tVal = new StringBuffer(num).reverse().toString();
-        for(int i = 0; i < tVal.length(); i++){
-            int digit = Character.digit(tVal.charAt(i), 10);
-        if(i % 2 == 0){ //check odd digits, index 0, 2, 4 etc.
-            sum1 += digit;
-        }else{ //check even digits 1, 3, 5 etc.
-            int temp = digit *2;
-            if(temp >9){
-                int d1 = temp/10;
-                int d2 = temp%10;
-                sum2 += d1 + d2;
-            }
-        else{
-          sum2 += temp;
-        }
-      }
-    }
-    return ((sum1+sum2)%10 == 0);
-  }
+
     /**
      * Sale constructor, takes user input to fill cart with items until user
      * enters -999 to indicate no more items, user enters -1 to remove item
@@ -125,18 +99,64 @@ public class Transaction extends Register {
         int pt = getPaymentType();
 
         if (registerPay(pt)) {
-            Scanner cashIn = new Scanner(System.in);
-            System.out.print("Enter cash recieved\n-->"); //should put this in a loop, make another method?
-            double c = 0.0;
-            if (cashIn.hasNextInt()) {
-                c = cashIn.nextInt();
+            if (pt == 0) { //payment type is cash, run through getting cash, print receipt etc.
+                Scanner cashIn = new Scanner(System.in);
+                System.out.print("Enter cash recieved\n-->"); //should put this in a loop, make another method?
+                double c = 0.0;
+                if (cashIn.hasNextInt()) {
+                    c = cashIn.nextInt();
+                }
+                double change = makeChange(c, currentCart.getSubtotal());
+                Receipt receipt = new Receipt(currentCart, tax, pt);
+                receipt.store();
+                receipt.print();
+                System.out.printf("Your change is %d.", change);
+            } else if (pt == 1) {
+                Scanner creditCardScan = new Scanner(System.in);
+                System.out.print("Enter credit card number\n-->");
+                if (creditCardScan.hasNextInt()) {
+                    int ccN = creditCardScan.nextInt();
+                    String ccNString = new StringBuffer(ccN).toString();
+                    boolean validate = creditCardCheck(ccNString);
+                    if (validate) { //valid cc
+                        System.out.println("Valid Credit Card Entered");
+                        Receipt receipt = new Receipt(currentCart, tax, pt);
+                        receipt.store();
+                        receipt.print();
+                    } else {
+                        System.out.println("Invalid Credit Card Entered, Try Againg"); //not 100% sure where this will end up afterwards, need to check and adjust
+                    }
+                }
             }
-            double change = makeChange(c, currentCart.getSubtotal());
-            Receipt receipt = new Receipt(currentCart, tax, pt);
-            receipt.store();
-            receipt.print();
-            System.out.printf("Your change is %d.", change);
         }
+    }
+
+    /**
+     * creditCard check method to validate a credit card
+     *
+     * @param num
+     * @return boolean true/false if cc is valid or not
+     */
+    public static boolean creditCardCheck(String num) {
+        int sum1 = 0;
+        int sum2 = 0;
+        String tVal = new StringBuffer(num).reverse().toString();
+        for (int i = 0; i < tVal.length(); i++) {
+            int digit = Character.digit(tVal.charAt(i), 10);
+            if (i % 2 == 0) { //check odd digits, index 0, 2, 4 etc.
+                sum1 += digit;
+            } else { //check even digits 1, 3, 5 etc.
+                int temp = digit * 2;
+                if (temp > 9) {
+                    int d1 = temp / 10;
+                    int d2 = temp % 10;
+                    sum2 += d1 + d2;
+                } else {
+                    sum2 += temp;
+                }
+            }
+        }
+        return ((sum1 + sum2) % 10 == 0);
     }
 
     /**
