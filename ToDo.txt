@@ -1,4 +1,17 @@
 To Do:
+FOR THURSDAY
+-Create a return table
+-adjust returning a rental
+	- add a return period
+	- adjust pricing
+	- rental deposit
+-credit card payment
+	- check and test
+-string input errors
+-Overall debugging
+
+
+
 -fully integrate with DB - DONE
 -fully integrate with GUI - Beta
 -Rental
