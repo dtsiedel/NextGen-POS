@@ -1,5 +1,5 @@
 
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
 
 /**
@@ -12,6 +12,9 @@ public class Cart extends Register {
     //protected ArrayList<Item> items;
     private double subTotal;
     private double cashIn;
+    private static final Date startDate = Calendar.getInstance().getTime();
+    private int days; //number of days customer wants to rent some item
+    private ArrayList<Date> dates; //arraylist of return dates
 
     /**
      * Cart default constructor
@@ -19,6 +22,7 @@ public class Cart extends Register {
     public Cart() {
         this.subTotal = 0.0;
         inventory = new ArrayList<>(); //temp
+        dates = new ArrayList<>();
         //items = new ArrayList<>();
 
     }
@@ -32,6 +36,88 @@ public class Cart extends Register {
     public void add(Item item) {
         inventory.add(item);
         this.subTotal += item.getPrice();
+    }
+
+    /**
+     * add a return date to the date arraylist
+     *
+     */
+    public void addDate() {
+        dates.add(calculateReturnDate(this.days));
+    }
+
+    /**
+     * when returning a rented item, this will remove that return date from the
+     * list of sorted return dates
+     *
+     * @param d
+     */
+    public void removeDate(Date d) {
+        dates.remove(d);
+    }
+
+    /**
+     * this will calculate the return date based on a start date constant from
+     * when the rental object is initially created
+     *
+     * @param days
+     * @return return date
+     */
+    public static Date calculateReturnDate(int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        cal.add(Calendar.DAY_OF_YEAR, days);
+        return cal.getTime();
+    }
+
+    /**
+     * sort the dates index 0 is the earliest date of all rented items therefore
+     * return date is this date, when that date comes, remove it from the list
+     * and update return date, remember to charge appropriate fee if date is
+     * late
+     *
+     * @param d
+     */
+    public void sortDates(ArrayList<Date> d) {
+        Date earlyDate;
+        int j = 0;
+        for (int i = 1; i < d.size() - 1; i++) {
+            earlyDate = d.get(i);
+            j = i;
+            while (j > 0 && d.get(j - 1).after(earlyDate)) {
+                d.set(j, d.get(j - 1));
+                j += 1;
+            }
+        }
+    }
+
+    /**
+     * set the days for how long a rental is, will update in transaction each
+     * time
+     *
+     * @param d
+     */
+    public void setDays(int d) {
+        this.days = d;
+    }
+
+    /**
+     * get the return date for return purposes
+     *
+     * @return
+     */
+    public Date getReturnDate() {
+        sortDates(dates);
+        return dates.get(0);
+    }
+
+    /**
+     * get the date associated with this cart of items
+     *
+     * @return
+     */
+    public Date getStartDate() {
+        return Cart.startDate;
     }
 
     /**
@@ -97,6 +183,9 @@ public class Cart extends Register {
         return this.subTotal;
     }
 
+    /**
+     * print the rentals
+     */
     public void printRentals() {
         for (int i = 0; i < inventory.size(); i++) {
             if (inventory.get(i).getIsRental()) {
