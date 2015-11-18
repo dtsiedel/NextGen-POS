@@ -1,0 +1,128 @@
+Team Pandas 
+Beta Phase
+Next-Gen POS User Manual
+
+Introduction
+
+Scope and Purpose: 
+The Next-Gen POS System is a complete solution for a professional Point of Sale System. The System handles transactions, payment, receipt generation and storage, and manages databases of users and products. This manual assumes a basic knowledge of entering text. No considerable technical knowledge is required. 
+
+Process Overview: 
+1.	Log In
+2.	Indicate Transaction Type
+3.	Enter Transaction Details
+4.	Close Transaction
+5.	Return to Step 2
+
+Process 0: Setup/Boot Program
+
+Requirements: 
+The Next-Gen POS System requires a Unix System, which should be provided by the company as the retail terminal. It also has sqlite3 as a dependency. For proper use, the System must be able to access a database using this program. SQLite is a lightweight database software that creates a locally-hosted database. To install sqlite3 on an OSX system, simply use the homebrew command “brew install sqlite3” at the command line terminal. The process a bit more complex on a Linux machine, and may require a technician’s assistance. 
+
+Booting Up the System:
+The system may be booted up from the command prompt. Compile the program with the command “javac Register.java” when in the same directory as the application. Then, use “java Register” to begin the program processes. 
+
+Process 1: Log In
+
+1.	Immediately upon booting up the system, the user will be faced with a login screen.
+2.	Enter a User ID and the associated password to continue. Users have a status associated with them, either Cashier or Manager. The workflow diverges at this point, depending on whether the provided ID is associated with a cashier or a manager. 
+
+
+Process 2: Manager Operations
+
+1.	Select the input corresponding to the appropriate option.
+
+Process 2a: Add User  
+
+
+1.	After selecting the “Add User” function, the user will encounter a data entry menu.
+2.	First, enter the ID of the user you wish to add.
+3.	Then, enter the password the user will have. 
+4.	Finally, indicate whether the user will be a manager. Enter any input beginning with the letter ‘y’ (including “yes”, “Yes”, “Y”, etc) to indicate that the user is a manager. Any other input will indicate a regular user with cashier-level permissions. 
+
+Process 2b: Remove User
+
+1.	After selecting the “Remove User” function, the user will encounter a data entry menu.
+2.	At the menu, enter the ID of the user you wish to remove. The user ID will no longer be valid. Please ensure you enter the ID correctly to avoid removing a user you did not intend to remove. 
+
+Process 2c: Log Out
+
+1.	After selecting log out, the program will return to the log in screen, and another user (or the same user) may log in to the system
+
+Process 2d: Shutdown
+
+1.	After selecting log out, the system will prompt to confirm shutdown. 
+2.	Enter any text beginning with “y” to shut down the system. Inputting “y”, “Y”, and “YES”, for example, would shut the system down. Entering any input that does not begin with “y” will cancel the shutdown process, and return the process to the beginning of Process 2. 
+3.	Note that only manager accounts have permissions to shut down a terminal.
+
+
+
+
+Process 3: Cashier Operations
+
+1.	Select the input corresponding to the appropriate option. 
+
+Process 3a: Process Sale
+
+1.	Select “Process Transaction” at the main cashier menu. 
+2.	After selecting process transaction, the system will prompt for the ID of the item.
+3.	Enter the item ID, either manually or with a barcode scanner.
+4.	The system will next prompt for the quantity of the item to be purchased; enter it.
+5.	Repeat from step 2 until all items are entered. 
+6.	When done entering items, enter “999” at the “enter ID” prompt to close the sale. 
+7.	Enter the payment method, and either the credit card number (for credit transactions) or the amount of cash tendered (for cash transactions).
+8.	Make change, as indicated by the terminal, if appropriate. 
+
+Process 3a1: Remove an Item from a Transaction in Progress
+
+1.	At the “enter ID” prompt, enter “-1” instead of a valid item ID. 
+2.	When prompted, enter the ID of the item you wish to remove.
+3.	The item will now be removed from the cart, and the process will return to the “enter ID” menu.
+
+Process 3a2: Cancel a Sale in Progress
+
+1.	At the “enter ID” prompt, enter “-190” instead of a valid item ID.
+2.	The sale will be canceled. No items will be removed from inventory. No receipt will be created.
+
+Process 3b: Process Rental
+
+1.	Select “Process Transaction” at the main cashier menu.
+2.	Rental items and sale items may be processed on a single receipt; that is, a customer can buy and rent items at the same time.
+3.	Entering the ID of a rentable item will automatically create a rental, instead of a regular sale.
+4.	When prompted, enter the length of time the item will be rented for.
+5.	Continue entering items as usual. Either sale or rental items may be entered.
+6.	Close the sale as usual, with -999 at the “enter ID” menu. 
+
+Process 3b1: Remove Rental from Transaction in Progress
+
+1.	See Section 3a1, “Remove an Item from a Transaction in Progress”.
+
+Process 3b2: Cancel a Rental in Progress
+
+1.	See Section 3a2, “Cancel a Sale in Progress”.
+
+Process 3c: Returning an Item/Items
+
+1.	Select “Process Return” from the main cashier menu.
+2.	Returns without receipts are not supported.
+3.	Enter the ID of the receipt, provided by the customer.
+4.	Enter the ID of an item on the receipt to be returned.
+5.	Enter the quantity of that item being returned.
+6.	Repeat from step 4 until all returned items are processed. 
+7.	When done returning items, enter “-200” at the “enter ID” prompt to complete the return.
+8.	A return receipt will be generated, indicating the amount owed to the customer.
+
+Process 3d: Returning a Rental
+
+1.	Select “Return Rental” from the main cashier menu.
+2.	Enter the ID of the receipt being returned.
+3.	Enter the ID of the returned item when prompted, and the quantity returned.
+4.	Repeat until all returned rentals have been enumerated.
+5.	As in a regular return, indicate the end of input with “-200” instead of an ID.
+6.	A rental return receipt will be generated (typically with a balance of 0 dollars, as no money is owed either way).
+7.	Overdue fees will be added automatically to the receipt; if such a fee exists, take payment from the customer as per a regular transaction.
+
+Process 3e: Log Out
+
+1.	Select “Logout” at the main cashier menu.
+2.	The user will be logged out, and control is returned to the login screen.
