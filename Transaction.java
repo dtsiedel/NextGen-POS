@@ -66,6 +66,20 @@ public class Transaction extends Register {
                         //based on input, return Item from database called item
                         System.out.println("Enter quantity of item to be purchased"); //prompt user to enter quantity of items to buy
                         int itemQuan = transaction.nextInt();
+                        //if the item entered is a rental prompt them to start rental process
+                        if (SQLInterface.getInstance().isRentable(input)) {
+                            Scanner rentScan = new Scanner(System.in);
+                            System.out.print("Enter number of days for your rental\n-->");
+                            int numRentDays = 0;
+                            if (rentScan.hasNextInt()) {
+                                numRentDays = rentScan.nextInt();
+                                currentCart.setDays(numRentDays);
+                                currentCart.addDate();
+                            } else {
+                                System.out.println("Please try again");
+                                continue; //this should got back to promprting them for an item id
+                            }
+                        }
                         if (itemQuan > SQLInterface.getInstance().getQuantity(input)) { //check inventory
                             System.out.println("Error, not enough inventory for purchase");
                             System.out.println("Please re-enter item id and quantity");
@@ -117,7 +131,7 @@ public class Transaction extends Register {
                 if (creditCardScan.hasNextInt()) {
                     int ccN = creditCardScan.nextInt();
                     String ccNString = new StringBuffer(ccN).toString();
-                    boolean validate = creditCardCheck(ccNString);
+                    boolean validate = CreditCheck.getInstance().creditCardCheck(ccNString);
                     if (validate) { //valid cc
                         System.out.println("Valid Credit Card Entered");
                         Receipt receipt = new Receipt(currentCart, tax, pt);
@@ -129,34 +143,6 @@ public class Transaction extends Register {
                 }
             }
         }
-    }
-
-    /**
-     * creditCard check method to validate a credit card
-     *
-     * @param num
-     * @return boolean true/false if cc is valid or not
-     */
-    public static boolean creditCardCheck(String num) {
-        int sum1 = 0;
-        int sum2 = 0;
-        String tVal = new StringBuffer(num).reverse().toString();
-        for (int i = 0; i < tVal.length(); i++) {
-            int digit = Character.digit(tVal.charAt(i), 10);
-            if (i % 2 == 0) { //check odd digits, index 0, 2, 4 etc.
-                sum1 += digit;
-            } else { //check even digits 1, 3, 5 etc.
-                int temp = digit * 2;
-                if (temp > 9) {
-                    int d1 = temp / 10;
-                    int d2 = temp % 10;
-                    sum2 += d1 + d2;
-                } else {
-                    sum2 += temp;
-                }
-            }
-        }
-        return ((sum1 + sum2) % 10 == 0);
     }
 
     /**

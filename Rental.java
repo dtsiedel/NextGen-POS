@@ -1,3 +1,4 @@
+
 /**
  * A rental has a price, due date, associated receipt
  *
@@ -50,13 +51,13 @@ public class Rental {
         return this.receipt;
     }
 
-    
     /**
-    *makes a rental
-    *
-    */
-    public void makeRental() throws InterruptedException, IOException
-    {
+     * makes a rental
+     *
+     * @throws java.lang.InterruptedException
+     * @throws java.io.IOException
+     */
+    public void makeRental() throws InterruptedException, IOException {
         Return ret = new Return();
         ret.makeReturn();
     }

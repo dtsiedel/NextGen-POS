@@ -15,6 +15,7 @@ public class Receipt {
     private int id = -999;             //tracks the receipt's ID. ID is assigned when receipt is added to db
     //private final double lateFee = 200.00; // late fee beta?
     private Date date = new Date();
+    private double rentalDeposit = 0.0;
 
     /**
      * Receipt constructor if you know the id you want
@@ -54,19 +55,18 @@ public class Receipt {
      * checks the date on a receipt for a rental to ensure it is within time to
      * return otherwise charge fee of $5.00?
      *
+     * @param r
      * @return goodCheck (true/false)
      */
-    public boolean checkRentalDate() {
+    public boolean checkRentalDate(Receipt r) {
         boolean goodCheck = false;
-        Date currentDate = new Date();
-        Date returnDate = this.date;
-        returnDate.setMonth(this.date.getMonth() + 1);
-        if (this.date.after(returnDate)) {
-            goodCheck = false;
-        } else if (this.date.before(returnDate)) {
-            goodCheck = true;
-        }
+        Date ret = cart.getReturnDate();
+        goodCheck = !ret.after(r.date);
         return goodCheck;
+    }
+
+    public double getRentalDeposit() {
+        return this.rentalDeposit;
     }
 
     /**
@@ -85,15 +85,26 @@ public class Receipt {
             //System.out.println(item.getName() + "\t(" + item.getQuantity() + ")" + "\t\t$" + df.format(item.getPrice())); //fix later
             if (item.getIsRental()) {
                 System.out.print("(R)");
+                //this will add a rental deposit, return this when they return the rental!
+                this.rentalDeposit += 5.00;
             }
             System.out.println(item.getName() + "\t\t$" + df.format(item.getPrice()));
         }
-        System.out.println("\n\tOrder Subtotal:\t$" + df.format(cart.getSubtotal()));
-        double totalTax = this.tax;
-        System.out.println("\tTotal Tax:\t$" + df.format(totalTax));
-        System.out.println("\nOrder Total:\t$" + df.format(cart.getSubtotal() + totalTax));
-        System.out.println("Receipt Number: " + this.id);  //this line is why you need to store() before you print()
-
+        if (this.rentalDeposit > 0) {
+            double total = cart.getSubtotal() + this.rentalDeposit;
+            System.out.println("Rent Deposit: " + df.format(this.rentalDeposit));
+            System.out.println("\n\tOrder Subtotal:\t$" + df.format(total));
+            double totalTax = this.tax;
+            System.out.println("\tTotal Tax:\t$" + df.format(totalTax));
+            System.out.println("\nOrder Total:\t$" + df.format(total) + totalTax);
+            System.out.println("Receipt Number: " + this.id);
+        } else {
+            System.out.println("\n\tOrder Subtotal:\t$" + df.format(cart.getSubtotal()));
+            double totalTax = this.tax;
+            System.out.println("\tTotal Tax:\t$" + df.format(totalTax));
+            System.out.println("\nOrder Total:\t$" + df.format(cart.getSubtotal() + totalTax));
+            System.out.println("Receipt Number: " + this.id);  //this line is why you need to store() before you print()
+        }
         // if(!checkRentalDate()){
         //     System.out.println("Late Fee:\t" + this.lateFee);
         //     System.out.println("Total with Fee:\t" + df.format(cart.getSubtotal() + totalTax + this.lateFee));
