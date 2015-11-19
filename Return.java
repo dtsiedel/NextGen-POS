@@ -12,7 +12,7 @@ public class Return {
     
     private boolean done = false;
     private double rentDepositReturn = 0.0; //how much money customer gets back of their deposit
-    private double rentalFee = 0.0;
+    private static double rentalFee = 200.0;
     private boolean paid = false;
     private double returnCash = 0.0;
     
@@ -27,23 +27,24 @@ public class Return {
      * @throws InterruptedException
      * @throws IOException
      */
-    public void makeReturn() throws InterruptedException, IOException {
+    public void makeReturn() throws InterruptedException, IOException 
+    {
         //Double total = 0.0;
         Scanner sc = new Scanner(System.in);
         Cart returnCart = new Cart();
         Boolean flag = false;
-        System.out.println("Enter the number of the receipt: ");
+        System.out.print("Enter the number of the receipt:\n-->");
         int id = sc.nextInt();
         
         Receipt r = ReceiptManager.getInstance().getReceipt(id);
         
         if (r != null) {
             do {
-                System.out.print("Enter ID of item to be returned, or -200 to stop entering: ");
+                System.out.print("Enter ID of item to be returned, or -200 to stop entering:\n-->");
                 id = sc.nextInt();
                 
                 if (id != -200) {
-                    System.out.print("Enter the number that you wish to return: ");
+                    System.out.print("Enter the number that you wish to return:\n-->");
                     int retQ = sc.nextInt();
                     
                     Item i = SQLInterface.getInstance().getItem(id);
@@ -55,14 +56,11 @@ public class Return {
                             if (r.checkRentalDate(r)) {
                                 this.rentDepositReturn += 5.00;
                                 r.getCart().removeDate(r.getCart().getReturnDate());
-                            } else {
-                                this.rentalFee += item.getPrice() * .625;
-                            }
+                            } 
                         }
                     }
                     
                     int existingItems = Collections.frequency(ids, i.getItemNumber());
-                    //System.out.println("TEST: items: " + existingItems);
 
                     if (retQ <= existingItems) {
                         SQLInterface.getInstance().updateQuantity(i.getItemNumber(), retQ); //update how many we have
@@ -81,61 +79,189 @@ public class Return {
                     flag = true; //indicates you are done returning items
                 }
             } while (!flag);
-            if (this.rentalFee == 0) {
-                Double tax = .06 * returnCart.getSubtotal();
-                Receipt returnReceipt = new Receipt(returnCart, tax, 0);
-                returnReceipt.store();
-                returnReceipt.print();
-                System.out.println("Deposit returned: " + this.rentDepositReturn);
-                this.rentDepositReturn = r.getRentalDeposit() - this.rentDepositReturn;
-                System.out.println("Rental Deposit balance remaining: " + this.rentDepositReturn);
-            } else if (r.getCart().getPaymentType() == 1) {
-                Double tax = .06 * returnCart.getSubtotal();
-                Receipt returnReceipt = new Receipt(returnCart, tax, 1);
-                returnReceipt.store();
-                returnReceipt.print();
-                System.out.println("Deposit returned: " + this.rentDepositReturn);
-                this.rentDepositReturn = r.getRentalDeposit() - this.rentDepositReturn;
-                System.out.println("Rental Deposit balance remaining: " + this.rentDepositReturn);
-                System.out.println("Rental Fee Due: " + this.rentalFee);
-                Scanner ccScan = new Scanner(System.in);
-                do {
-                    if (ccScan.hasNextInt()) {
-                        int ccN = ccScan.nextInt();
-                        String ccNString = new StringBuffer(ccN).toString();
-                        if (CreditCheck.getInstance().creditCardCheck(ccNString)) {
-                            System.out.println("Payment processed, Thank you");
-                            paid = true;
-                        } else {
-                            System.out.println("Payment error, try again");
+            
+
+
+            if(!r.getCart().containsRentals()) //a transaction with only sales, no rentals
+            {
+                Scanner pay = new Scanner(System.in);
+
+                Cart salesCart = new Cart(); //a cart for items that are not rentals
+
+                //then put all the items back into inventory
+                for(Item i : (ArrayList<Item>)returnCart.getInventory())
+                {
+                    System.out.print("Enter why you returned " + i.getName() + "\n-->");
+                    String reason = pay.nextLine();
+                    ReturnManager.getInstance().storeReturnItem(i.getItemNumber(), reason); //store the returned item in the returns db
+                    
+                    salesCart.add(i);
+                }
+
+                r = new Receipt(salesCart, .06, 0);
+                r.store();
+                r.print();
+            }
+            else if (r.getCart().getReturnDate().after(returnCart.getStartDate())) //if it is not late
+            {
+                if(returnCart.containsRentals())
+                {
+                    Scanner pay = new Scanner(System.in);
+
+                    Cart salesCart = new Cart(); //a cart for items that are not rentals
+
+                    System.out.println("Deposit returned: " + this.rentDepositReturn);
+                    this.rentDepositReturn = r.getRentalDeposit() - this.rentDepositReturn;
+                    System.out.println("Rental Deposit balance remaining: " + this.rentDepositReturn);
+
+                    //then put all the items back into inventory
+                    for(Item i : (ArrayList<Item>)returnCart.getInventory())
+                    {
+                        if(i.getIsRental())
+                            SQLInterface.getInstance().updateQuantity(i.getItemNumber(), 1); //add item back into inventory once the rental comes back in
+                        else //is a sold item, not a rental
+                        {
+                            System.out.print("Enter why you returned " + i.getName() + "\n-->");
+                            String reason = pay.nextLine();
+                            ReturnManager.getInstance().storeReturnItem(i.getItemNumber(), reason); //store the returned item in the returns db
+                            
+                            salesCart.add(i);
                         }
                     }
-                } while (!paid);
-            } else {
-                Double tax = .06 * returnCart.getSubtotal();
-                Receipt returnReceipt = new Receipt(returnCart, tax, 0);
-                returnReceipt.store();
-                returnReceipt.print();
-                System.out.println("Deposit returned: " + this.rentDepositReturn);
-                this.rentDepositReturn = r.getRentalDeposit() - this.rentDepositReturn;
-                System.out.println("Rental Deposit balance remaining: " + this.rentDepositReturn);
-                System.out.println("Rental Fee Due: " + this.rentalFee);
-                System.out.print("Enter cash received\n-->");
-                Scanner feeScan = new Scanner(System.in);
-                do {
-                    if (feeScan.hasNextDouble()) {
-                        this.returnCash = feeScan.nextDouble();
-                        if (this.returnCash >= this.rentalFee) {
-                            System.out.println("Your fee has been paid, and your change is: " + (this.returnCash - this.rentalFee));
-                            paid = true;
-                        } else if (this.returnCash < this.rentalFee) {
-                            System.out.println("Insufficient funds, try again");
+
+                    r = new Receipt(salesCart, .06, 0);
+                    r.store();
+                    r.print();
+
+                }
+            }
+            else //rental that is late
+            {
+                Scanner pay = new Scanner(System.in);
+                System.out.println("Payment owed for late fee: $200.00");
+                System.out.print("Enter payment type (0: Cash, 1: Credit)\n-->");
+
+                if(pay.hasNextInt())
+                {
+                    boolean valid = false;
+
+                    int payType = 0;
+
+                    while(!valid)
+                    {
+                        payType = pay.nextInt();
+
+                        if((payType == 1) || (payType == 0))
+                            valid = true;
+                        else
+                            System.out.println("Not a valid input. Try again.\n-->");
+
+                    }
+
+                    double payAmount = 0.0;
+
+                    if(payType == 0) //credit
+                    {
+                        System.out.println("Enter cash tendered\n-->");
+                        if(pay.hasNextDouble())
+                        {
+                            payAmount = pay.nextDouble();
+                        }
+                        else
+                        {
+                            valid = false;
+                            while(!valid)
+                            {
+                                if(pay.hasNextDouble())
+                                {
+                                    System.out.println("Invalid Input, Try Again.");
+                                    payAmount = pay.nextDouble();
+                                }
+                            }
+                        }
+                        Double change = makeChange(payAmount, 200.0);
+
+                        System.out.printf("Your change: %6.2f\n", change);
+
+                    }
+                    else if(payType == 1) //credit
+                    {
+                        valid = false;
+                        do
+                        {
+                            valid = false;
+                            Scanner creditCardScan = new Scanner(System.in);
+                            System.out.print("Enter credit card number\n-->");
+                            if (creditCardScan.hasNextLong()) 
+                            {
+                                long ccN = creditCardScan.nextLong();
+                                String ccNString = Long.toString(ccN);
+                                boolean validate = CreditCheck.getInstance().creditCardCheck(ccNString);
+                                if (validate) 
+                                { //valid cc
+                                    System.out.println("Valid Credit Card Entered");
+                                    valid = true;
+                                } 
+                                else 
+                                {
+                                    System.out.print("Invalid Credit Card Entered, Try Again\n-->"); 
+                                }
+                            }
+                        }while(!valid);
+                    }
+
+
+                    Cart salesCart = new Cart();
+
+                    //then put all the items back into inventory
+                    for(Item i : (ArrayList<Item>)returnCart.getInventory())
+                    {
+                        if(i.getIsRental())
+                            SQLInterface.getInstance().updateQuantity(i.getItemNumber(), 1); //add item back into inventory once the rental comes back in
+                        else //is a sold item, not a rental
+                        {
+                            System.out.print("Enter why you returned " + i.getName() + "\n-->");
+                            String reason = pay.nextLine();
+                            ReturnManager.getInstance().storeReturnItem(i.getItemNumber(), reason); //store the returned item in the returns db
+                        
+                            salesCart.add(i); //a cart for items that are not rentals
                         }
                     }
-                } while (!paid);
+
+                    r = new Receipt(salesCart, .06, 0);
+                    r.store();
+                    r.print();
+                }
+
             }
         } else {
             System.out.println("Receipt does not exist.");
         }
+    }
+
+    public double makeChange(double cash, double total) 
+    {
+        double ret = 0.0;
+        Scanner cashIn = new Scanner(System.in);
+
+        if (cash >= total) {
+            ret = cash - total;
+            System.out.println("cash: " + cash + "total: " + total);
+        } else if (cash < total) 
+        {
+            System.out.println("Insufficient Funds!");
+            System.out.print("Enter more money to complete the sale:\n-->");
+
+            double c = 0.0;
+            if (cashIn.hasNextDouble()) 
+            {
+                c = cashIn.nextDouble();
+            }
+
+            cash = cash + c;
+            ret = makeChange(cash, total);
+
+        }
+        return ret;
     }
 }

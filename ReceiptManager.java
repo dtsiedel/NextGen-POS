@@ -12,8 +12,8 @@ public class ReceiptManager {
 
     private static ReceiptManager instance = null;
 
-    private static String sqlite = "sqlite3";       //sqlite version string
-    private static String db = "data";              //overall database name
+    public static String sqlite = "sqlite3";       //sqlite version string
+    public static String db = "data";              //overall database name
     private static String receiptDB = "receipts";   //receipt db name
     private static String itemsDB = "receiptitems"; //itemsdb name
 
@@ -22,7 +22,8 @@ public class ReceiptManager {
     private static int receiptItemCount;   //current number of items listed in receiptItems db, one more than this is next location to store in
 
     //private for Singleton pattern
-    private ReceiptManager() throws InterruptedException, IOException {
+    private ReceiptManager() throws InterruptedException, IOException 
+    {
 
         //NOTE: receipts db index 0 has start to represent receiptCount, run to represent receiptItemCount
         //initialize receiptCount based on values stored in Receipt db index 0
@@ -40,7 +41,8 @@ public class ReceiptManager {
 
     //handles the low-level operation of making a SQL call (the proper way to handle what I did in SQLInterface, rework for beta)
     //should call getSQLOutput after to get result and clean up file you made
-    private void makeSQLCall(String[] command) throws InterruptedException, IOException {
+    private void makeSQLCall(String[] command) throws InterruptedException, IOException 
+    {
         ProcessBuilder pb = new ProcessBuilder(command);
 
         File outfile = new File("output.txt"); //write output to a file
@@ -56,7 +58,8 @@ public class ReceiptManager {
     }
 
     //gets the output from the file 'output.txt' in the same directory as the program
-    private String getSQLOutput() throws InterruptedException, IOException {
+    private String getSQLOutput() throws InterruptedException, IOException 
+    {
         File inFile = new File("output.txt");
         Scanner sc = new Scanner(inFile);
 
@@ -78,7 +81,8 @@ public class ReceiptManager {
 
     //Singleton design pattern, used to initialize unique instance or get it
     //also sets values dependant on persistent data: START corresponds to receiptCount, RUN to receipItemCount
-    public static synchronized ReceiptManager getInstance() throws InterruptedException, IOException {
+    public static synchronized ReceiptManager getInstance() throws InterruptedException, IOException 
+    {
 
         if (instance == null) {
             instance = new ReceiptManager();
@@ -88,11 +92,12 @@ public class ReceiptManager {
     }
 
     //stores the receipt in the database 
-    public int storeReceipt(Receipt r) throws InterruptedException, IOException {
+    public int storeReceipt(Receipt r) throws InterruptedException, IOException 
+    {
 		//layout of Receipt DB: id, string for date, two ints for item indices
         //id(int)         date(string)        start (int)      run (int)
 
-        //Process"
+        //Process:
         //look at length of cart to determine how many elements to fill in ReceiptItem db ('run')
         //look at receiptItemCount to see where to start adding items ('start')
         //look at receiptCount to see where to insert receipt, make new entry at that id with values
@@ -135,7 +140,8 @@ public class ReceiptManager {
 
     //updates ReceiptManager.receiptCount AND the database (start), this is the only way this should be done
     //in order to ensure they remain synchronized
-    private void incrementReceiptCount() throws InterruptedException, IOException {
+    private void incrementReceiptCount() throws InterruptedException, IOException 
+    {
         ReceiptManager.receiptCount++; //increment this program's counter
 
         //then increment the database counter (at index 0) by the appropriate amount
@@ -147,7 +153,8 @@ public class ReceiptManager {
 
     //updates ReceiptManager.receiptItemCount AND the database(run), this is the only way this should be done
     //in order to ensure they remain synchronized
-    private void incrementReceiptItemCount() throws InterruptedException, IOException {
+    private void incrementReceiptItemCount() throws InterruptedException, IOException 
+    {
         ReceiptManager.receiptItemCount++; //increment this program's counter
 
         //then increment the database counter (at index 0) by the appropriate amount
@@ -171,7 +178,8 @@ public class ReceiptManager {
     }
 
     //gets a receipt in the database based on ID
-    public Receipt getReceipt(int receiptID) throws InterruptedException, IOException {
+    public Receipt getReceipt(int receiptID) throws InterruptedException, IOException 
+    {
 		Receipt r;
         //id(int)         name(string)        price(real)      quantity(int)      rental(0-1int, aka makeshift bool)
 
