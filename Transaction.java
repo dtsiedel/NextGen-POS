@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.util.*;
+import java.util.InputMismatchException;
 
 /**
  * Sale class extends Register, performs Sale transaction
@@ -64,7 +65,12 @@ public class Transaction extends Register {
                         break;
                     } else { //input is none of the options, thus possibly a valid itemNumber to add an item to cart
                         //based on input, return Item from database called item
+<<<<<<< HEAD
                         System.out.print("Enter quantity of item to be purchased\n-->"); //prompt user to enter quantity of items to buy
+=======
+                        System.out.println("Enter quantity of item to be purchased"); //prompt user to enter quantity of items to buy
+                        if (!transaction.hasNextInt()){throw new InputMismatchException();}
+>>>>>>> refs/remotes/origin/master
                         int itemQuan = transaction.nextInt();
                         //if the item entered is a rental prompt them to start rental process
                         if (SQLInterface.getInstance().isRentable(input)) {
@@ -103,9 +109,13 @@ public class Transaction extends Register {
                     }
                 } else {
                     System.out.println("INVALID INPUT...Try Again");
+                    System.out.println();
+                    transaction.nextLine();
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException| InputMismatchException e) {
                 System.out.println("Error reading input, try again");
+                System.out.println();
+                transaction.nextLine();
             }
         }
         tax = getTax(currentCart);
