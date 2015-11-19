@@ -103,9 +103,13 @@ public class Transaction extends Register {
                     }
                 } else {
                     System.out.println("INVALID INPUT...Try Again");
+                    System.out.println();
+                    transaction.nextLine();
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Error reading input, try again");
+                System.out.println();
+                transaction.nextLine();
             }
         }
         tax = getTax(currentCart);

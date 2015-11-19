@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 import java.util.Scanner;
-
+import java.util.InputMismatchException;
 /**
  * a manager with admin privileges
  */
@@ -41,7 +41,7 @@ public class Manager {
         boolean done = false;
         do {
             System.out.print("Please select an option\n-->");
-            System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, 3:Process Transaction, 4:Process Return, 5:Return Rental\n-1:Logout, -2:Shutdown]");
+            System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, 3:Process Transaction, 4:Process Return, 5:Return Rental\n-1:Logout, -2:Shutdown]-->");
             try {
                 switch (managerScan.nextInt()) {
                     case 0:
@@ -104,8 +104,10 @@ public class Manager {
                         System.out.println("Invalid input, please try again!");
                         break;
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException|InputMismatchException e) {
                 System.out.println("Error reading input, please try again!");
+                System.out.println();
+                managerScan.nextLine();
             }
         } while (!done);
     }
