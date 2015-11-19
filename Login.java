@@ -5,6 +5,7 @@
  */
 import java.io.*;
 import java.util.Scanner;
+import java.security.GeneralSecurityException;
 
 public class Login {
 
@@ -42,6 +43,7 @@ public class Login {
             String givenPW = id.next();
             try
             {
+                if (this.uName.contains(";") || givenPW.contains(";") || givenPW.contains("\\s")){throw new GeneralSecurityException();}
                 if (givenPW.equals(SQLInterface.getInstance().getPassword(this.uName))) { //checks db for matching username and password
                     if (SQLInterface.getInstance().isManager(this.uName)) {
                         System.out.println("Manager Login Success");
@@ -60,11 +62,21 @@ public class Login {
                     }
 
                     System.out.println("Invalid User Name/Password, Remaining Attempts: " + attempts);
+                    System.out.println();
+                    id.nextLine();
                 }
             }
-            catch(FileNotFoundException e)
+            catch(FileNotFoundException| GeneralSecurityException e)
             {
-                System.out.println("Invalid User Name/Password");
+                attempts--;
+                if(attempts == 0){
+                   System.out.println("Too many attempts, exiting");
+                   System.exit(1);
+                }
+
+                System.out.println("Invalid User Name/Password, Remaining Attempts: " + attempts);
+                System.out.println();
+                id.nextLine();
             }
         } while (!done);
         return ret;
