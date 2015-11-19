@@ -23,6 +23,10 @@ public class CreditCheck {
     public boolean creditCardCheck(String num) {
         int sum1 = 0;
         int sum2 = 0;
+       
+        if(num.length() < 16)
+            return false;
+
         String tVal = new StringBuffer(num).reverse().toString();
         for (int i = 0; i < tVal.length(); i++) {
             int digit = Character.digit(tVal.charAt(i), 10);

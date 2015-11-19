@@ -109,7 +109,7 @@ public class Register {
             System.out.println("************************************");
             System.out.println("************ Main Menu *************");
             System.out.println("***********************************");
-            int rout = l.startLogin(); //Success?
+            int rout = l.startLogin(); //returns success code -1 for cashier, 0 for manager
             if (rout == -1) {
                 Cashier.cashierDo();
             } else if (rout == -0) {

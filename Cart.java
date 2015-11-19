@@ -9,7 +9,6 @@ public class Cart extends Register {
 
     protected ArrayList<Item> inventory;
 
-    //protected ArrayList<Item> items;
     private double subTotal;
     private double cashIn;
     private static final Date startDate = Calendar.getInstance().getTime();
@@ -36,6 +35,13 @@ public class Cart extends Register {
     public void add(Item item) {
         inventory.add(item);
         this.subTotal += item.getPrice();
+        
+        if(item.getIsRental())
+        {
+            Item deposit = new Item(false, 5.0, -150, "Deposit", 1); //the rental deposit
+            inventory.add(deposit);
+            this.subTotal += deposit.getPrice();
+        }
     }
 
     /**
@@ -66,7 +72,7 @@ public class Cart extends Register {
     public static Date calculateReturnDate(int days) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(startDate);
-        cal.add(Calendar.DAY_OF_YEAR, days);
+        cal.add(Calendar.DATE, days);
         return cal.getTime();
     }
 
@@ -104,7 +110,7 @@ public class Cart extends Register {
     /**
      * get the return date for return purposes
      *
-     * @return
+     * @return returndate
      */
     public Date getReturnDate() {
         sortDates(dates);
@@ -114,7 +120,7 @@ public class Cart extends Register {
     /**
      * get the date associated with this cart of items
      *
-     * @return
+     * @return startdate
      */
     public Date getStartDate() {
         return Cart.startDate;
@@ -128,9 +134,8 @@ public class Cart extends Register {
      */
     public void addMultItems(Item item, int q) {
         for (int i = 0; i < q; i++) {
-            inventory.add(item);
+            this.add(item);
         }
-        subTotal += (item.getPrice() * q);
     }
 
     //get method for inventory arraylist
@@ -192,6 +197,18 @@ public class Cart extends Register {
                 System.out.println(inventory.get(i).getName() + "   $" + inventory.get(i).getPrice());
             }
         }
+    }
+
+    //checks if there are any rentals in this cart
+    public boolean containsRentals()
+    {
+        for(Item i : this.inventory)
+        {
+            if(i.getIsRental())
+                return true;
+        }
+
+        return false; 
     }
 
 }
