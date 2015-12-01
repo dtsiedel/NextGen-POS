@@ -11,19 +11,26 @@ public class Cart extends Register {
 
     private double subTotal;
     private double cashIn;
-    private static final Date startDate = Calendar.getInstance().getTime();
+    private int currentDay;
     private int days; //number of days customer wants to rent some item
-    private ArrayList<Date> dates; //arraylist of return dates
 
     /**
      * Cart default constructor
      */
     public Cart() {
         this.subTotal = 0.0;
-        inventory = new ArrayList<>(); //temp
-        dates = new ArrayList<>();
-        //items = new ArrayList<>();
+        inventory = new ArrayList<>(); 
+        this.setCurrentDay();
+        days = 0;
+    }
 
+    //special constructor for use only by ReceiptManager
+    //does not make the date right now
+    public Cart(boolean flag)
+    {
+        this.subTotal = 0.0;
+        inventory = new ArrayList<>(); 
+        days = 0;
     }
 
     /**
@@ -48,9 +55,10 @@ public class Cart extends Register {
      * add a return date to the date arraylist
      *
      */
-    public void addDate() {
-        dates.add(calculateReturnDate(this.days));
-    }
+    //public void addDate() {
+    //    dates.add(calculateReturnDate(days));
+        //System.out.println(dates.get(0));
+    //}
 
     /**
      * when returning a rented item, this will remove that return date from the
@@ -58,9 +66,9 @@ public class Cart extends Register {
      *
      * @param d
      */
-    public void removeDate(Date d) {
-        dates.remove(d);
-    }
+    //public void removeDate(Integer d) {
+    //    dates.remove(d);
+    //}
 
     /**
      * this will calculate the return date based on a start date constant from
@@ -69,11 +77,9 @@ public class Cart extends Register {
      * @param days
      * @return return date
      */
-    public static Date calculateReturnDate(int days) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        cal.add(Calendar.DATE, days);
-        return cal.getTime();
+    public int calculateReturnDate(int days) {
+        int returnDate = this.currentDay + days;
+        return returnDate;
     }
 
     /**
@@ -84,18 +90,16 @@ public class Cart extends Register {
      *
      * @param d
      */
-    public void sortDates(ArrayList<Date> d) {
-        Date earlyDate;
-        int j = 0;
-        for (int i = 1; i < d.size() - 1; i++) {
-            earlyDate = d.get(i);
-            j = i;
-            while (j > 0 && d.get(j - 1).after(earlyDate)) {
-                d.set(j, d.get(j - 1));
-                j += 1;
-            }
-        }
-    }
+    //public ArrayList<Integer> sortDates(ArrayList<Integer> d) {
+    //    Integer earlyDate;
+     //   int j = 0;
+    //    Collections.sort(d);
+
+//        for(int z = 0; z < dates.size(); z++){
+ //           System.out.println(dates.get(z));
+  //      }
+   //     return d;
+    //}
 
     /**
      * set the days for how long a rental is, will update in transaction each
@@ -107,23 +111,30 @@ public class Cart extends Register {
         this.days = d;
     }
 
+    //returns number of days being rented
+    public int getDays()
+    {
+        return this.days;
+    }
+
     /**
      * get the return date for return purposes
      *
      * @return returndate
      */
-    public Date getReturnDate() {
-        sortDates(dates);
-        return dates.get(0);
+    public int getReturnDate() {
+        return calculateReturnDate(this.days);
     }
-
+    public void setCurrentDay(){
+        this.currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);    
+    }
     /**
      * get the date associated with this cart of items
      *
      * @return startdate
      */
-    public Date getStartDate() {
-        return Cart.startDate;
+    public Integer getStartDate() {
+        return this.currentDay;
     }
 
     /**

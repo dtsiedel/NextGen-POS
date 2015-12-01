@@ -11,7 +11,7 @@ public class Receipt {
 
     private Cart cart;
     private double tax;
-    private int paymentMethod;  //0: Cash - just accept cash for the alpha
+    private int paymentMethod; 
     private int id = -999;             //tracks the receipt's ID. ID is assigned when receipt is added to db
     //private final double lateFee = 200.00; // late fee beta?
     private Date date = new Date();
@@ -60,8 +60,8 @@ public class Receipt {
      */
     public boolean checkRentalDate(Receipt r) {
         boolean goodCheck = false;
-        Date ret = cart.getReturnDate();
-        goodCheck = !ret.after(r.date);
+        int ret = cart.getReturnDate();
+        goodCheck = !(ret > (r.getCart().getStartDate()));
         return goodCheck;
     }
 
@@ -81,17 +81,19 @@ public class Receipt {
         Date receiptDate = new Date(); //now
         System.out.println("Date: " + receiptDate);
         for (Item item : cart.inventory) { //for each item in cart
-            //System.out.println(item.getName() + "\t(" + item.getQuantity() + ")" + "\t\t$" + df.format(item.getPrice())); //fix later
             if (item.getIsRental()) {
                 System.out.print("(R)");
-                //this will add a rental deposit, return this when they return the rental!
-                //this.rentalDeposit += 5.00;
             }
             System.out.println(item.getName() + "\t\t$" + df.format(item.getPrice()));
         }
 
+
         System.out.println("\n\tOrder Subtotal:\t$" + df.format(cart.getSubtotal()));
-        double totalTax = this.tax/2;
+        double totalTax = this.tax;
+        if(cart.getSubtotal() == 0)
+        {
+            totalTax = 0;
+        }
         System.out.println("\tTotal Tax:\t$" + df.format(totalTax));
         System.out.println("\nOrder Total:\t$" + df.format(cart.getSubtotal() + totalTax));
         System.out.println("Receipt Number: " + this.id);  //this line is why you need to store() before you print()

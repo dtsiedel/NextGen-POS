@@ -95,7 +95,7 @@ public class ReceiptManager {
     public int storeReceipt(Receipt r) throws InterruptedException, IOException 
     {
 		//layout of Receipt DB: id, string for date, two ints for item indices
-        //id(int)         date(string)        start (int)      run (int)
+        //id(int)         date(string)        start (int)      run (int)    duration(int)
 
         //Process:
         //look at length of cart to determine how many elements to fill in ReceiptItem db ('run')
@@ -111,8 +111,10 @@ public class ReceiptManager {
         int run = inventory.size();         //number of items in the cart = run of items in 2nd db
         int start = ReceiptManager.receiptItemCount; //starting place of receiptItems in 2nd db
 
+        int duration = r.getCart().getDays(); //get the number of days that this is being rented for
+
         int index = ReceiptManager.receiptCount;       //location to insert this receipt
-        String[] command = {sqlite, db, ("INSERT INTO " + receiptDB + " VALUES(" + index + ",date('now')," + start + "," + run + ");")};
+        String[] command = {sqlite, db, ("INSERT INTO " + receiptDB + " VALUES(" + index + "," + r.getCart().getStartDate() + "," + start + "," + run + "," + duration + ");")};
 
         this.makeSQLCall(command);
         this.incrementReceiptCount(); //make sure indices are correct 
@@ -165,16 +167,31 @@ public class ReceiptManager {
     }
 
     //gets the data associated with the receipt at the given id
-    public Date getDate(int receiptID) throws InterruptedException, IOException 
+    public int getDate(int receiptID) throws InterruptedException, IOException 
     {
         String[] command = {sqlite, db, ("SELECT date FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
+
+        this.makeSQLCall(command);
+
         String dateString = this.getSQLOutput();
 
-        Date date = new Date(Date.parse(dateString));
-
-        System.out.println(date);
+        int date = Integer.parseInt(dateString);
 
         return date;
+    }
+
+    //gets the duration of the rental duration associated with a receipt
+    public int getDuration(int receiptID) throws InterruptedException, IOException
+    {
+        String[] command = {sqlite, db, ("SELECT duration FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
+
+        this.makeSQLCall(command);
+
+        String durationString = this.getSQLOutput();
+
+        int duration = Integer.parseInt(durationString);
+
+        return duration; 
     }
 
     //gets a receipt in the database based on ID
@@ -192,7 +209,7 @@ public class ReceiptManager {
         
         if(receiptID < ReceiptManager.receiptCount)
         {
-            Cart cart = new Cart();
+            Cart cart = new Cart(false);
 
             String[] commands1 = {sqlite, db, ("SELECT start FROM " + receiptDB + " WHERE id=" + receiptID + ";")};
             this.makeSQLCall(commands1);
@@ -253,6 +270,7 @@ public class ReceiptManager {
                 cart.add(item);
 
             }
+
 
             r = new Receipt(cart, .06, 0, receiptID);
         }

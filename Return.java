@@ -35,34 +35,36 @@ public class Return {
         Boolean flag = false;
         System.out.print("Enter the number of the receipt:\n-->");
         int id = sc.nextInt();
-        
+        int retQ = 0;
         Receipt r = ReceiptManager.getInstance().getReceipt(id);
+        int startRentalDate = ReceiptManager.getInstance().getDate(id);
         
         if (r != null) {
+            int number = 0;
+            int totalReturnQuant = 0;
             do {
                 System.out.print("Enter ID of item to be returned, or -200 to stop entering:\n-->");
                 id = sc.nextInt();
                 
                 if (id != -200) {
                     System.out.print("Enter the number that you wish to return:\n-->");
-                    int retQ = sc.nextInt();
-                    
+                    retQ = sc.nextInt();
+
+                    totalReturnQuant += retQ; 
+
                     Item i = SQLInterface.getInstance().getItem(id);
-                    
+
                     ArrayList<Integer> ids = new ArrayList<Integer>(); //a list of the IDs of the items 
-                    for (Item item : (ArrayList<Item>) (r.getCart().getInventory())) {
+                    for (Item item : (ArrayList<Item>) (r.getCart().getInventory())) 
+                    {
                         ids.add(item.getItemNumber());
-                        if (item.getIsRental()) {
-                            if (r.checkRentalDate(r)) {
-                                this.rentDepositReturn += 5.00;
-                                r.getCart().removeDate(r.getCart().getReturnDate());
-                            } 
-                        }
                     }
+                    
                     
                     int existingItems = Collections.frequency(ids, i.getItemNumber());
 
-                    if (retQ <= existingItems) {
+                    if (retQ <= existingItems) 
+                    {
                         SQLInterface.getInstance().updateQuantity(i.getItemNumber(), retQ); //update how many we have
 
                         for (int counter = 0; counter < retQ; counter++) //for loop for adding to return cart
@@ -79,7 +81,25 @@ public class Return {
                     flag = true; //indicates you are done returning items
                 }
             } while (!flag);
-            
+
+            //done entering items
+            for(Item item : (ArrayList<Item>)(r.getCart().getInventory()))
+            {
+                if (item.getIsRental()) 
+                {
+                    if (r.checkRentalDate(r)) 
+                    {
+                        if(number < totalReturnQuant)
+                            number++;
+                    }   
+                }
+            }
+
+
+            if(number > 0)
+            {
+                this.rentDepositReturn += 5.00 * number;
+            }
 
 
             if(!r.getCart().containsRentals()) //a transaction with only sales, no rentals
@@ -102,38 +122,36 @@ public class Return {
                 r.store();
                 r.print();
             }
-            else if (r.getCart().getReturnDate().after(returnCart.getStartDate())) //if it is not late
+            else if (r.getCart().getStartDate() < returnCart.getReturnDate()) //if it is not late
             {
-                if(returnCart.containsRentals())
+               
+                Scanner pay = new Scanner(System.in);
+
+                Cart salesCart = new Cart(); //a cart for items that are not rentals
+                System.out.println(r.getRentalDeposit());
+                System.out.println("Deposit returned: " + this.rentDepositReturn);
+                double temp = r.getRentalDeposit() - this.rentDepositReturn;
+                System.out.println("Rental Deposit balance remaining: " + temp);
+
+                //then put all the items back into inventory
+                for(Item i : (ArrayList<Item>)returnCart.getInventory())
                 {
-                    Scanner pay = new Scanner(System.in);
-
-                    Cart salesCart = new Cart(); //a cart for items that are not rentals
-
-                    System.out.println("Deposit returned: " + this.rentDepositReturn);
-                    this.rentDepositReturn = r.getRentalDeposit() - this.rentDepositReturn;
-                    System.out.println("Rental Deposit balance remaining: " + this.rentDepositReturn);
-
-                    //then put all the items back into inventory
-                    for(Item i : (ArrayList<Item>)returnCart.getInventory())
+                    if(i.getIsRental())
+                        SQLInterface.getInstance().updateQuantity(i.getItemNumber(), 1); //add item back into inventory once the rental comes back in
+                    else //is a sold item, not a rental
                     {
-                        if(i.getIsRental())
-                            SQLInterface.getInstance().updateQuantity(i.getItemNumber(), 1); //add item back into inventory once the rental comes back in
-                        else //is a sold item, not a rental
-                        {
-                            System.out.print("Enter why you returned " + i.getName() + "\n-->");
-                            String reason = pay.nextLine();
-                            ReturnManager.getInstance().storeReturnItem(i.getItemNumber(), reason); //store the returned item in the returns db
-                            
-                            salesCart.add(i);
-                        }
+                        System.out.print("Enter why you returned " + i.getName() + "\n-->");
+                        String reason = pay.nextLine();
+                        ReturnManager.getInstance().storeReturnItem(i.getItemNumber(), reason); //store the returned item in the returns db
+                        
+                        salesCart.add(i);
                     }
-
-                    r = new Receipt(salesCart, .06, 0);
-                    r.store();
-                    r.print();
-
                 }
+
+                r = new Receipt(salesCart, .06, 0);
+                r.store();
+                r.print();
+
             }
             else //rental that is late
             {
@@ -246,7 +264,7 @@ public class Return {
 
         if (cash >= total) {
             ret = cash - total;
-            System.out.println("cash: " + cash + "total: " + total);
+            //System.out.println("cash: " + cash + "total: " + total);
         } else if (cash < total) 
         {
             System.out.println("Insufficient Funds!");
