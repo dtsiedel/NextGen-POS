@@ -1,6 +1,6 @@
 
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Register class, calculates totalTax, and getPaymentType
@@ -32,11 +32,6 @@ public class Register {
 
         totalTax = cart.getSubtotal() * .06; //tax percentage in PA
 
-        for (Item item : cart.inventory) {
-            //totalTax += item.getPrice()*stateTax(currentState, item.getType());
-            totalTax += item.getPrice() * .06; //temp until TaxCalculator is implemented
-            //totalTax += item.getPrice() * taxCalc.getTax();
-        }
         return totalTax;
     }
 
@@ -46,9 +41,25 @@ public class Register {
      * @return paymentType
      */
     public int getPaymentType() {
+        boolean valid = false;
+
+        
         System.out.print("Enter payment method-");
-        System.out.print("[OPTIONS: 0 for Cash, 1 for Credit]\n-->"); //credit  not implemented yet
-        this.paymentType = readPaymentType.nextInt();
+        System.out.print("[OPTIONS: 0 for Cash, 1 for Credit]\n-->"); 
+
+        while(!valid)
+        {
+            try
+            {
+                this.paymentType = readPaymentType.nextInt();
+                valid = true;
+            }catch(InputMismatchException e)
+            {
+                valid = false;
+                System.out.println("Invalid Input! Try Again\n-->");
+            }
+        }
+
         return this.paymentType;
     }
 
@@ -105,7 +116,7 @@ public class Register {
         boolean done = false;
         reg.setState(State.PENNSYLVANIA);
         do {
-            System.out.println("Welcome to The Panda's Next Gen POS!");
+            System.out.println("Welcome to The Pandas' Next Gen POS!");
             System.out.println("************************************");
             System.out.println("************ Main Menu *************");
             System.out.println("***********************************");

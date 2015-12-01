@@ -1,7 +1,6 @@
 
 import java.io.IOException;
 import java.util.*;
-import java.util.InputMismatchException;
 
 /**
  * Sale class extends Register, performs Sale transaction
@@ -65,9 +64,7 @@ public class Transaction extends Register {
                         break;
                     } else { //input is none of the options, thus possibly a valid itemNumber to add an item to cart
                         //based on input, return Item from database called item
-
-                        System.out.println("Enter quantity of item to be purchased"); //prompt user to enter quantity of items to buy
-                        if (!transaction.hasNextInt()){throw new InputMismatchException();}
+                        System.out.print("Enter quantity of item to be purchased\n-->"); //prompt user to enter quantity of items to buy
                         int itemQuan = transaction.nextInt();
                         //if the item entered is a rental prompt them to start rental process
                         if (SQLInterface.getInstance().isRentable(input)) {
@@ -77,7 +74,7 @@ public class Transaction extends Register {
                             if (rentScan.hasNextInt()) {
                                 numRentDays = rentScan.nextInt();
                                 currentCart.setDays(numRentDays);
-                                currentCart.addDate();
+                                currentCart.getReturnDate();
                             } else {
                                 System.out.println("Please try again");
                                 continue; //this should go back to prompting them for an item id
@@ -106,14 +103,13 @@ public class Transaction extends Register {
                     }
                 } else {
                     System.out.println("INVALID INPUT...Try Again");
-                    System.out.println();
-                    transaction.nextLine();
                 }
-            } catch (NumberFormatException| InputMismatchException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Error reading input, try again");
-                System.out.println();
-                transaction.nextLine();
             }
+            System.out.printf("\nCurrent Cart Subtotal : %5.2f", this.currentCart.getSubtotal());
+            System.out.print("\n\n");
+
         }
         tax = getTax(currentCart);
 
@@ -122,12 +118,13 @@ public class Transaction extends Register {
         if (registerPay(pt)) {
             if (pt == 0) { //payment type is cash, run through getting cash, print receipt etc.
                 Scanner cashIn = new Scanner(System.in);
+                System.out.printf("Cart Total: %6.2f\n", (this.currentCart.getSubtotal()*1.06));
                 System.out.print("Enter cash recieved\n-->"); //should put this in a loop, make another method?
                 double c = 0.0;
                 if (cashIn.hasNextDouble()) {
                     c = cashIn.nextDouble();
                 }
-                double change = makeChange(c, currentCart.getSubtotal() + tax/2);
+                double change = makeChange(c, currentCart.getSubtotal() + tax);
                 Receipt receipt = new Receipt(currentCart, tax, pt);
                 receipt.store();
                 receipt.print();
@@ -201,10 +198,9 @@ public class Transaction extends Register {
     public double makeChange(double cash, double total) {
         double ret = 0.0;
         Scanner cashIn = new Scanner(System.in);
-
         if (cash >= total) {
             ret = cash - total;
-            System.out.println("cash: " + cash + "total: " + total);
+           
         } else if (cash < total) 
         {
             System.out.println("Insufficient Funds!");

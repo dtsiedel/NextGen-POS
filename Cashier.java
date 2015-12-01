@@ -4,7 +4,7 @@
  */
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.InputMismatchException;
+
 public class Cashier {
 
     private String uName;
@@ -38,7 +38,7 @@ public class Cashier {
         Scanner cashierScan = new Scanner(System.in);
         boolean done = false;
         do {
-            System.out.print("Please select an option-->");
+            System.out.print("Please select an option");
             System.out.print("[OPTIONS- 0:Process Transaction, 1: Process Return, 2: Return Rental, -1:Logout]\n-->");
             try {
                 switch (cashierScan.nextInt()) {
@@ -63,10 +63,8 @@ public class Cashier {
                         System.out.println("Invalid input, please try again!");
                         break;
                 }
-            } catch (NumberFormatException|InputMismatchException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Error reading input, please try again!");
-                System.out.println();
-                cashierScan.nextLine();
             }
         } while (!done);
     }
