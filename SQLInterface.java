@@ -261,6 +261,30 @@ public class SQLInterface {
 
     }
 
+   public int getMaxID() throws InterruptedException, IOException, FileNotFoundException{
+        int maxID;
+        String[] idCommand = {sqlite, dbName, "SELECT max(rowid) FROM products;"};
+
+        ProcessBuilder pb = new ProcessBuilder(idCommand);
+
+        File outfile = new File("output.txt");
+        pb.redirectOutput(outfile);
+        pb.redirectError(outfile);
+
+        Process p = pb.start();
+        p.waitFor();
+
+
+        Scanner sc = new Scanner(outfile);
+        String result = sc.nextLine();
+
+        maxID = Integer.parseInt(result);
+
+        return maxID;
+
+
+    }
+
     //test stub, just runs through the functions
     // public static void main(String[] args) throws InterruptedException, IOException {
 

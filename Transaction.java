@@ -70,6 +70,7 @@ public class Transaction extends Register {
                         System.out.print("Enter quantity of item to be purchased\n-->"); //prompt user to enter quantity of items to buy
                         if (!transaction.hasNextInt()){throw new InputMismatchException();}
                         int itemQuan = transaction.nextInt();
+                        if (itemQuan < 1){throw new InputMismatchException();}
                         //if the item entered is a rental prompt them to start rental process
                         if (SQLInterface.getInstance().isRentable(input)) {
                             Scanner rentScan = new Scanner(System.in);
@@ -115,7 +116,7 @@ public class Transaction extends Register {
                 System.out.println();
                 transaction.nextLine();
             }
-            System.out.printf("\nCurrent Cart Subtotal : %5.2f", this.currentCart.getSubtotal());
+            System.out.printf("\nCurrent Cart Subtotal : %.2f", this.currentCart.getSubtotal());
             System.out.print("\n\n");
 
         }
@@ -125,21 +126,33 @@ public class Transaction extends Register {
 
         if (registerPay(pt)) {
             boolean paid = false;
-            while(paid){
+            while(!paid){
                 if (pt == 0) { //payment type is cash, run through getting cash, print receipt etc.
                     Scanner cashIn = new Scanner(System.in);
-                    System.out.printf("Cart Total: %6.2f\n", (this.currentCart.getSubtotal()*1.06));
-                    System.out.print("Enter cash recieved\n-->"); //should put this in a loop, make another method?
+                    System.out.printf("Cart Total: %.2f\n", (this.currentCart.getSubtotal()*1.06));
+                    System.out.print("Enter cash recieved or enter -999 to pay by card\n-->"); //should put this in a loop, make another method?
                     double c = 0.0;
                     if (cashIn.hasNextDouble()) {
                         c = cashIn.nextDouble();
+                        if (c == -999){
+                             pt = 1;
+                             System.out.println("\nPaying By Card...");
+                             continue;
+                        }
+                        else if(c <=0){
+                            System.out.println("Please Enter a valid amount...\n");
+                            continue;
+                        }
+                        double change = makeChange(c, currentCart.getSubtotal() + tax);
+                        Receipt receipt = new Receipt(currentCart, tax, pt);
+                        receipt.store();
+                        receipt.print();
+                        System.out.printf("Your change is %.2f.\n", change);
+                        paid = true;
+                        continue;
                     }
-                    double change = makeChange(c, currentCart.getSubtotal() + tax);
-                    Receipt receipt = new Receipt(currentCart, tax, pt);
-                    receipt.store();
-                    receipt.print();
-                    System.out.printf("Your change is %6.2f.\n", change);
-                    paid = true;
+                    System.out.println("Please Enter a valid amount...\n");
+                    continue;
                 } 
                 else if (pt == 1) 
                 {
@@ -148,12 +161,13 @@ public class Transaction extends Register {
                     {
                         valid = false;
                         Scanner creditCardScan = new Scanner(System.in);
-                        System.out.print("Enter credit card number or enter -999\n-->");
+                        System.out.print("Enter credit card number or enter -999 to pay with cash\n-->");
                         if (creditCardScan.hasNextLong()) 
                         {
                             long ccN = creditCardScan.nextLong();
-                            if (ccN.equals(-999)){
+                            if (ccN == -999){
                                 pt = 0;
+                                System.out.println("\nPaying By Cash...");
                                 break;
                             }
                             String ccNString = Long.toString(ccN);
@@ -169,9 +183,10 @@ public class Transaction extends Register {
                             } 
                             else 
                             {
-                                System.out.println("Invalid Credit Card Entered, Try Again"); //not 100% sure where this will end up afterwards, need to check and adjust
+                                System.out.println("Invalid Credit Card Entered, Try Again."); //not 100% sure where this will end up afterwards, need to check and adjust
                             }
                         }
+                        System.out.println("Invalid Credit Card Entered, Try Again.");
                     }while(!valid);
                 }
         }
@@ -220,14 +235,26 @@ public class Transaction extends Register {
            
         } else if (cash < total) 
         {
-            System.out.println("Insufficient Funds!");
-            System.out.print("Enter more money to complete the sale:\n-->");
-
+            System.out.printf("Insufficient Funds!\nRemaining Amount Due: $%.2f\n", (total-cash));
             double c = 0.0;
-            if (cashIn.hasNextDouble()) 
-            {
-                c = cashIn.nextDouble();
+            while (true){
+                System.out.print("Enter more money to complete the sale:\n-->");
+                if (cashIn.hasNextDouble()) 
+                {
+                    c = cashIn.nextDouble();
+                    if (c > 0.0){
+                        break;
+                    }
+                    else{
+                        System.out.println("Please enter a valid sum of money...\n");
+                    }
+                }
+                else{
+                    System.out.println("Please enter a valid sum of money...\n");
+                    cashIn.nextLine();
+                }
             }
+
 
             cash = cash + c;
             ret = makeChange(cash, total);
