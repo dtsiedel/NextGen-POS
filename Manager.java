@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 import java.util.Scanner;
-
+import java.util.InputMismatchException;
 /**
  * a manager with admin privileges
  */
@@ -41,7 +41,7 @@ public class Manager {
         boolean done = false;
         do {
             System.out.print("Please select an option\n-->");
-            System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, 3:Process Transaction, 4:Process Return, 5:Return Rental\n-1:Logout, -2:Shutdown]");
+            System.out.print("[OPTIONS- 0:Add User, 1:Delete User, 2:Sale Statistics, 3:Process Transaction, 4:Process Return, 5:Return Rental\n-1:Logout, -2:Shutdown]-->");
             try {
                 switch (managerScan.nextInt()) {
                     case 0:
@@ -51,7 +51,12 @@ public class Manager {
                         String uPW = managerScan.next();
                         System.out.println("Please enter new user's manager status (true, false)");
                         boolean mng = managerScan.nextBoolean();
-                        SQLInterface.getInstance().addUser(uN, uPW, mng);
+                       
+                        if(SQLInterface.getInstance().isAvailable(uN))
+                            SQLInterface.getInstance().addUser(uN, uPW, mng);
+                        else
+                            System.out.println("Error: That user already exists!");
+
                         break;
                     case 1:
                         System.out.print("Enter the id of the user you wish to delete\n-->");
@@ -61,7 +66,10 @@ public class Manager {
                         String yn1 = managerScan.next();
                         switch (yn1.toUpperCase()) {
                             case "Y":
-                                SQLInterface.getInstance().deleteUser(delID);
+                                if(!SQLInterface.getInstance().isAvailable(delID))
+                                    SQLInterface.getInstance().deleteUser(delID);
+                                else
+                                    System.out.println("Error: That user doesn't exist!");                            
                                 break;
                             case "N":
                                 System.out.println("No action was taken.");
@@ -104,8 +112,10 @@ public class Manager {
                         System.out.println("Invalid input, please try again!");
                         break;
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException|InputMismatchException e) {
                 System.out.println("Error reading input, please try again!");
+                System.out.println();
+                managerScan.nextLine();
             }
         } while (!done);
     }

@@ -179,7 +179,8 @@ public class Cart extends Register {
                 inventory.remove(i);
                 break;
             } else {
-                System.out.println("No such item exists in this Cart.");
+                if (i == inventory.size()-1)
+                    System.out.println("No such item exists in this Cart.");
             }
         }
 
